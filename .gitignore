@@ -3,6 +3,7 @@
 # (o sistema antigo, dados pessoais e relatórios gerados nunca sobem).
 /*
 !/.gitignore
+!/LICENSE
 !/robo_bi/
 !/servidor_bi.py
 !/rodar_robo.py
