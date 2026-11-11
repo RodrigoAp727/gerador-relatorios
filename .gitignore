@@ -1,0 +1,31 @@
+# Repositório gerador-relatorios = somente o Robô BI.
+# Tudo na raiz fica de fora, exceto o que está liberado abaixo
+# (o sistema antigo, dados pessoais e relatórios gerados nunca sobem).
+/*
+!/.gitignore
+!/robo_bi/
+!/servidor_bi.py
+!/rodar_robo.py
+!/ROBO_BI.bat
+!/ROBO_BI.md
+!/.github/
+/.github/*
+!/.github/README.md
+!/docs/
+/docs/*
+!/docs/img/
+!/tests/
+/tests/*
+!/tests/test_robo_bi.py
+
+# sempre fora, em qualquer pasta
+__pycache__/
+*.pyc
+.env
+.env.*
+*.log
+.venv/
+venv/
+relatorios_bi/
+exemplos/
+dados_bi/

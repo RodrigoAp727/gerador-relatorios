@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Robô BI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>/*__CSS__*/
+.zona{border:2px dashed var(--line);border-radius:var(--r);padding:46px 20px;text-align:center;cursor:pointer;transition:.15s;background:var(--surface)}
+.zona:hover,.zona.arrastando{border-color:var(--accent);background:var(--surface-2)}
+.zona .ico{font-size:40px;line-height:1;margin-bottom:10px;color:var(--accent)}
+.zona b{font-size:18px;display:block;margin-bottom:6px}
+.zona small{color:var(--muted)}
+.formatos{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:14px}
+.formatos span{font-family:var(--mono);font-size:11.5px;padding:3px 8px;border-radius:6px;background:var(--bg);border:1px solid var(--line);color:var(--ink-2)}
+.lista{margin:12px 0 0;padding:0;list-style:none}
+.lista li{display:flex;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid var(--line-soft)}
+.lista li .ext{font-family:var(--mono);font-size:11px;padding:3px 7px;border-radius:5px;background:var(--surface-2);color:var(--accent);min-width:52px;text-align:center}
+.lista li .nome{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lista li .tam{font-family:var(--mono);color:var(--muted);font-size:12px}
+.lista li button{background:none;border:0;color:var(--muted);cursor:pointer;font-size:16px}
+.lista li button:hover{color:var(--crit)}
+.campos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px}
+.campos label{display:block;font-size:12px;letter-spacing:.8px;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px}
+.campos input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 12px}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:13px 26px;font-weight:600;font-size:15px;cursor:pointer}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.sec{background:var(--surface-2);color:var(--ink);border:1px solid var(--line)}
+.acoes{display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap}
+.log{font-family:var(--mono);font-size:12.5px;background:#08111f;border:1px solid var(--line);border-radius:10px;padding:14px;max-height:340px;overflow:auto;white-space:pre-wrap;line-height:1.65;color:var(--ink-2)}
+.log .ok{color:#7fe07f}.log .er{color:#ff9a9a}.log .hd{color:var(--accent)}
+.resultado{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:12px}
+.res{padding:18px;display:flex;flex-direction:column;gap:8px}
+.res .tipo{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--accent)}
+.res b{font-size:17px}
+.res p{margin:0;color:var(--muted);font-size:13px}
+.res a{margin-top:auto;text-decoration:none;text-align:center}
+.passos{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.passo{padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.passo i{font-style:normal;font-family:var(--mono);font-weight:700;color:var(--accent-ink);background:var(--accent);border-radius:8px;min-width:30px;height:30px;display:grid;place-items:center}
+.passo b{display:block;margin-bottom:2px}.passo span{color:var(--muted);font-size:13px}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:g 1s linear infinite;vertical-align:-2px;margin-right:8px}
+@keyframes g{to{transform:rotate(360deg)}}
+@media (max-width:800px){.passos{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="card topo">
+  <div class="logo"><div class="marca">RB</div><div><b>Robô BI</b><small>Inteligência de dados</small></div></div>
+  <h1>Envio de arquivos</h1>
+  <div class="info">Os arquivos ficam no seu computador<br>nada é enviado para a internet</div>
+</header>
+
+<div class="passos" style="margin-top:12px">
+  <div class="card passo"><i>1</i><div><b>Suba os arquivos</b><span>Planilhas, exportações de sistema, qualquer formato. Pode enviar vários de uma vez.</span></div></div>
+  <div class="card passo"><i>2</i><div><b>O robô valida e cruza</b><span>Identifica o assunto (saúde, seguros ou outra área), confere os dados e calcula as métricas.</span></div></div>
+  <div class="card passo"><i>3</i><div><b>Abra o BI</b><span>Painel interativo com filtros, gráficos e a leitura do robô, mais o relatório de validação.</span></div></div>
+</div>
+
+<section class="card painel" style="margin-bottom:12px">
+  <div class="zona" id="zona">
+    <div class="ico">⬆</div>
+    <b>Arraste os arquivos aqui ou clique para escolher</b>
+    <small>Pode soltar uma pasta inteira · vários arquivos de uma vez · todas as abas do Excel são lidas</small>
+    <div class="formatos"><span>.xlsx</span><span>.xlsm</span><span>.xls</span><span>.csv</span><span>.txt</span><span>.ods</span><span>.json</span><span>.xml</span><span>.html</span><span>.parquet</span><span>.zip</span></div>
+    <input type="file" id="arq" multiple hidden>
+  </div>
+  <ul class="lista" id="lista"></ul>
+  <details style="margin-top:14px"><summary>Opções (opcional)</summary>
+    <div class="campos">
+      <div><label for="oNome">Nome no cabeçalho</label><input id="oNome" placeholder="Ex.: Corretora XYZ"></div>
+      <div><label for="oLim">Limite de sinistralidade (saúde)</label><input id="oLim" type="number" value="75" step="0.5"></div>
+      <div><label for="oVcmh">VCMH % (saúde)</label><input id="oVcmh" type="number" value="0" step="0.1"></div>
+      <div><label for="oDep">Idade limite de dependente</label><input id="oDep" type="number" value="24"></div>
+    </div>
+  </details>
+  <div class="acoes">
+    <button class="btn" id="btnGo" disabled>Processar e gerar BI</button>
+    <button class="btn sec" id="btnLimpar">Limpar</button>
+    <span id="resumo" style="color:var(--muted)"></span>
+  </div>
+</section>
+
+<section class="card painel" id="pProc" style="display:none;margin-bottom:12px">
+  <h3 id="procTit"><span class="spin"></span>Processando…</h3>
+  <p class="desc">Acompanhe o robô em tempo real</p>
+  <div class="log" id="log"></div>
+  <div class="resultado" id="res"></div>
+</section>
+
+<section class="card painel">
+  <h3>Processamentos anteriores</h3>
+  <p class="desc">Os painéis ficam guardados na pasta <code>relatorios_bi/</code></p>
+  <div id="hist"></div>
+</section>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const tam=b=>b>1e9?(b/1e9).toFixed(2)+" GB":b>1e6?(b/1e6).toFixed(1)+" MB":(b/1e3).toFixed(0)+" KB";
+let arquivos=[];
+function desenhar(){
+  $("lista").innerHTML=arquivos.map((f,i)=>`<li><span class="ext">${esc((f.name.split(".").pop()||"").toUpperCase())}</span><span class="nome" title="${esc(f.name)}">${esc(f.name)}</span><span class="tam">${tam(f.size)}</span><button data-i="${i}" title="Remover">✕</button></li>`).join("");
+  $("lista").querySelectorAll("button").forEach(b=>b.onclick=()=>{arquivos.splice(+b.dataset.i,1);desenhar();});
+  $("btnGo").disabled=!arquivos.length;
+  $("resumo").textContent=arquivos.length?`${arquivos.length} arquivo(s) · ${tam(arquivos.reduce((s,f)=>s+f.size,0))}`:"";
+}
+function adicionar(lista){ for(const f of lista){ if(!arquivos.some(a=>a.name===f.name&&a.size===f.size)) arquivos.push(f);} desenhar(); }
+$("zona").onclick=()=>$("arq").click();
+$("arq").onchange=e=>{adicionar(e.target.files);e.target.value="";};
+["dragenter","dragover"].forEach(ev=>$("zona").addEventListener(ev,e=>{e.preventDefault();$("zona").classList.add("arrastando");}));
+["dragleave","drop"].forEach(ev=>$("zona").addEventListener(ev,e=>{e.preventDefault();$("zona").classList.remove("arrastando");}));
+$("zona").addEventListener("drop",async e=>{
+  const itens=[...e.dataTransfer.items].map(i=>i.webkitGetAsEntry&&i.webkitGetAsEntry()).filter(Boolean);
+  if(!itens.length){ adicionar(e.dataTransfer.files); return; }
+  const out=[]; const ler=ent=>new Promise(res=>{
+    if(ent.isFile) ent.file(f=>{out.push(f);res();},()=>res());
+    else { const r=ent.createReader(), todos=[]; const lote=()=>r.readEntries(async es=>{ if(!es.length){ for(const x of todos) await ler(x); res(); } else { todos.push(...es); lote(); } },()=>res()); lote(); }
+  });
+  for(const it of itens) await ler(it); adicionar(out);
+});
+$("btnLimpar").onclick=()=>{arquivos=[];desenhar();};
+
+function linhaLog(t){ const c=/✅|✓/.test(t)?"ok":/✕|erro|Erro/.test(t)?"er":/^[📂🩺🛡📊🧪]/u.test(t)?"hd":""; return `<div class="${c}">${esc(t)}</div>`; }
+$("btnGo").onclick=async()=>{
+  const fd=new FormData(); arquivos.forEach(f=>fd.append("arquivos",f,f.name));
+  fd.append("nome",$("oNome").value); fd.append("limite",$("oLim").value); fd.append("vcmh",$("oVcmh").value); fd.append("idade_dep",$("oDep").value);
+  $("pProc").style.display=""; $("res").innerHTML=""; $("procTit").innerHTML='<span class="spin"></span>Enviando arquivos…';
+  $("log").innerHTML=""; $("btnGo").disabled=true; $("pProc").scrollIntoView({behavior:"smooth"});
+  let r;
+  try{ r=await (await fetch("/api/processar",{method:"POST",body:fd})).json(); }
+  catch(e){ $("procTit").textContent="Falha no envio"; $("log").innerHTML=linhaLog("✕ "+e); $("btnGo").disabled=false; return; }
+  if(r.erro){ $("procTit").textContent="Falha"; $("log").innerHTML=linhaLog("✕ "+r.erro); $("btnGo").disabled=false; return; }
+  $("procTit").innerHTML='<span class="spin"></span>Processando…';
+  acompanhar(r.id);
+};
+async function acompanhar(id){
+  const s=await (await fetch("/api/status/"+id)).json();
+  $("log").innerHTML=s.log.map(linhaLog).join(""); $("log").scrollTop=$("log").scrollHeight;
+  if(s.status==="rodando"){ setTimeout(()=>acompanhar(id),700); return; }
+  $("btnGo").disabled=!arquivos.length;
+  $("procTit").textContent=s.status==="ok"?"Pronto — BI gerado":"Não foi possível gerar o BI";
+  $("res").innerHTML=cartoes(s);
+  historico();
+}
+const DESC={"BI_Saude.html":["Plano de saúde","Carteira, perfil, custo, internação, renovação, elegibilidade e ficha da empresa"],
+  "BI_Seguros.html":["Seguros","Prêmio ganho, sinistralidade, frequência, severidade, ramos, UF, canais e corretores"],
+  "BI_Geral.html":["Painel geral","KPIs, evolução, rankings, cruzamentos e qualidade de todas as bases"]};
+function cartoes(s){
+  return s.arquivos.filter(a=>a.nome.endsWith(".html")).map(a=>{ const d=DESC[a.nome]||["Painel",""];
+    return `<div class="card res"><span class="tipo">${d[0]}</span><b>${esc(a.nome)}</b><p>${d[1]}</p><a class="btn" href="${a.url}" target="_blank">Abrir BI</a></div>`; }).join("")+
+    s.arquivos.filter(a=>a.nome.endsWith(".txt")).map(a=>`<div class="card res"><span class="tipo">Robô de validação</span><b>${esc(a.nome)}</b><p>O que foi conferido, descartado e por quê</p><a class="btn sec" href="${a.url}" target="_blank">Ver relatório</a></div>`).join("");
+}
+async function historico(){
+  const h=await (await fetch("/api/historico")).json();
+  if(!h.length){ $("hist").innerHTML='<div class="vazio">Nenhum processamento ainda</div>'; return; }
+  $("hist").innerHTML=`<table class="tab"><thead><tr><th>Quando</th><th>Arquivos enviados</th><th>Painéis</th></tr></thead><tbody>`+
+    h.map(j=>`<tr><td style="white-space:nowrap">${esc(j.quando)}</td><td>${esc(j.entradas.join(", "))}</td><td>${j.arquivos.filter(a=>a.nome.endsWith(".html")).map(a=>`<a href="${a.url}" target="_blank" style="color:var(--accent);margin-right:12px">${esc(a.nome.replace(".html",""))}</a>`).join("")||'<span style="color:var(--crit)">falhou</span>'}</td></tr>`).join("")+"</tbody></table>";
+}
+historico();
+</script>
+</body>
+</html>

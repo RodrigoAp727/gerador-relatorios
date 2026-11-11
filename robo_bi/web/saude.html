@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Inteligência da Carteira</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>/*__CSS__*/</style>
+</head>
+<body>
+<header class="card topo">
+  <div class="logo"><div class="marca" id="marcaSigla"></div><div><b id="marcaNome"></b><small id="marcaSub"></small></div></div>
+  <h1>Relatório de Inteligência da Carteira</h1>
+  <div class="info" id="hdrInfo"></div>
+</header>
+
+<nav class="abas" id="abas">
+  <button data-aba="a1"><span>01</span>Status e resumo</button>
+  <button data-aba="a2"><span>02</span>Carteira</button>
+  <button data-aba="a3"><span>03</span>Perfil da população</button>
+  <button data-aba="a4"><span>04</span>Custo e uso</button>
+  <button data-aba="a5"><span>05</span>Internação</button>
+  <button data-aba="a6"><span>06</span>Sinistralidade e renovação</button>
+  <button data-aba="a7"><span>07</span>Elegibilidade e inativos</button>
+  <button data-aba="a8"><span>08</span>Mês a mês</button>
+  <button data-aba="a9"><span>09</span>Ficha da empresa</button>
+</nav>
+
+<div class="card filtros">
+  <label for="fMes">Meses</label><select id="fMes"></select>
+  <label for="fOp">Operadora</label><select id="fOp"></select>
+  <label for="fEmp">Empresa</label><select id="fEmp"></select>
+  <span class="nota" id="notaVal"></span>
+</div>
+
+<!-- 01 -->
+<section class="aba" id="a1">
+  <div class="kpis" id="k1"></div>
+  <div class="grid2">
+    <div class="card painel"><h3>Leitura do robô</h3><p class="desc">Conclusões geradas por regras fixas a partir dos números do período — sem opinião, sem estimativa.</p><ul class="insights" id="ins1"></ul></div>
+    <div class="card painel"><h3>Sinistralidade mensal</h3><p class="desc">Sinistro ÷ prêmio de cada competência · tracejado = limite contratual</p><div class="chart" id="c1"></div></div>
+  </div>
+  <div class="card painel"><h3>Robô de validação</h3><p class="desc" id="valResumo"></p><div class="rolagem" id="val1"></div></div>
+</section>
+
+<!-- 02 -->
+<section class="aba" id="a2">
+  <div class="kpis" id="k2"></div>
+  <div class="card painel" style="margin-bottom:12px"><h3>Empresas da carteira</h3><p class="desc">Janela de 12 meses até a competência selecionada · clique no cabeçalho para ordenar</p><div class="rolagem" id="t2"></div></div>
+  <div class="grid2">
+    <div class="card painel"><h3>Sinistralidade 12 meses por empresa</h3><p class="desc">Cor dourada = acima do limite do próprio contrato</p><div class="chart" id="c2"></div></div>
+    <div class="card painel"><h3>Por operadora</h3><p class="desc">Totais de 12 meses</p><div id="t2b"></div></div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="aba" id="a3">
+  <div class="kpis" id="k3"></div>
+  <div class="grid2">
+    <div class="card painel"><h3>Pirâmide etária</h3><p class="desc">Vidas ativas no último dia da competência · faixas ANS</p><div class="chart pir" id="c3"></div></div>
+    <div class="card painel"><h3>Evolução de vidas</h3><p class="desc">Vidas ativas no fim de cada mês</p><div class="chart" id="c3b"></div>
+      <h3 style="margin-top:14px">Distribuição por faixa</h3><div id="t3"></div></div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="aba" id="a4">
+  <div class="kpis" id="k4"></div>
+  <div class="grid2">
+    <div class="card painel"><h3>Custo por tipo de evento · 12 meses</h3><p class="desc">Valor e participação no custo total</p><div id="c4"></div></div>
+    <div class="card painel"><h3>Custo per capita mensal</h3><p class="desc">Sinistro do mês ÷ vidas do mês (R$ por vida)</p><div class="chart" id="c4b"></div></div>
+  </div>
+  <div class="card painel" style="margin-bottom:12px"><h3>Frequência e custo médio por tipo</h3><p class="desc">Frequência = eventos 12m ÷ vidas-mês × 12.000 (eventos por mil vidas por ano)</p><div id="t4"></div></div>
+  <div class="grid21">
+    <div class="card painel"><h3>Maiores custos individuais · 12 meses</h3><p class="desc">Beneficiários identificados só pelo código (LGPD)</p><div class="rolagem" id="t4b"></div></div>
+    <div class="card painel"><h3>Concentração do custo</h3><p class="desc">Fatia do custo de 12 meses gasta pelos X% de vidas mais caras</p><div id="c4c"></div></div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="aba" id="a5">
+  <div class="kpis" id="k5"></div>
+  <div class="grid2">
+    <div class="card painel"><h3>Internações por mês</h3><p class="desc">Quantidade de eventos de internação</p><div class="chart" id="c5"></div></div>
+    <div class="card painel"><h3>Custo de internação por mês</h3><p class="desc">R$ por competência</p><div class="chart" id="c5b"></div></div>
+  </div>
+  <div class="card painel"><h3>Internação por empresa · 12 meses</h3><div class="rolagem" id="t5"></div></div>
+</section>
+
+<!-- 06 -->
+<section class="aba" id="a6">
+  <div class="kpis" id="k6"></div>
+  <div class="card painel" style="margin-bottom:12px"><h3>Sinistralidade mensal × acumulada 12 meses</h3><p class="desc">Acumulada = Σ sinistros 12m ÷ Σ prêmios 12m (não é média dos percentuais)</p><div class="chart" id="c6"></div></div>
+  <div class="card painel"><h3>Calendário de renovação e reajuste técnico estimado</h3>
+    <p class="desc">Reajuste técnico = sinistralidade 12m ÷ limite − 1 (mínimo 0). Indicativo total = (1 + técnico) × (1 + VCMH) − 1. A cláusula do contrato prevalece sobre esta estimativa.</p>
+    <div class="rolagem" id="t6"></div></div>
+</section>
+
+<!-- 07 -->
+<section class="aba" id="a7">
+  <div class="kpis" id="k7"></div>
+  <div class="grid2">
+    <div class="card painel"><h3>Movimentação cadastral</h3><p class="desc">Inclusões e exclusões por mês</p><div class="chart" id="c7"></div></div>
+    <div class="card painel"><h3>Sinistros após a exclusão</h3><p class="desc">Atendimentos com data posterior à exclusão do beneficiário — passíveis de contestação</p><div class="rolagem" id="t7a"></div></div>
+  </div>
+  <div class="grid2">
+    <div class="card painel"><h3 id="t7bTit">Dependentes acima da idade limite</h3><p class="desc">Situação na última competência dos dados</p><div class="rolagem" id="t7b"></div></div>
+    <div class="card painel"><h3>Sinistros antes da inclusão</h3><p class="desc">Atendimento com data anterior à entrada no plano</p><div class="rolagem" id="t7c"></div></div>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="aba" id="a8">
+  <div class="card painel"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><h3>Mês a mês</h3><p class="desc">Todas as competências até a selecionada, com os filtros aplicados</p></div>
+    <button class="sel" id="btnCsv" style="cursor:pointer;min-width:0">Baixar CSV</button></div>
+    <div class="rolagem" style="max-height:640px" id="t8"></div></div>
+</section>
+
+<!-- 09 -->
+<section class="aba" id="a9">
+  <div class="card secao-titulo"><h2>Ficha da empresa</h2>
+    <div class="card" style="display:flex;align-items:center;gap:10px;padding:6px 6px 6px 12px;background:var(--surface-2)"><span>Empresa</span><select class="sel" id="fFicha" style="min-width:240px"></select></div></div>
+  <div class="kpis" id="k9"></div>
+  <div class="grid2">
+    <div class="card painel"><h3>Sinistralidade · 12 meses</h3><div class="chart" id="c9"></div></div>
+    <div class="card painel"><h3>Pirâmide etária</h3><div class="chart pir" id="c9b"></div></div>
+  </div>
+  <div class="grid2">
+    <div class="card painel"><h3>Custo por tipo · 12 meses</h3><div id="c9c"></div></div>
+    <div class="card painel"><h3>Leitura do robô</h3><ul class="insights" id="ins9"></ul></div>
+  </div>
+</section>
+
+<div class="card metodo">
+  <b>Metodologia.</b> Sinistralidade = sinistros por data de atendimento ÷ prêmio faturado na mesma competência.
+  Janela de 12 meses = soma das 12 competências até a selecionada (ou todas as disponíveis, se houver menos).
+  Vidas = beneficiários ativos no último dia do mês (incluídos até a data e não excluídos até ela).
+  Per capita = valor ÷ vidas-mês. Faixas etárias da ANS (RN 63/2003).
+  Competências mais recentes podem ainda receber contas médicas atrasadas (sinistros não avisados); o robô não estima esse valor.
+  Só entram números aprovados pelo robô de validação; linhas descartadas estão listadas na aba 01.
+</div>
+
+<script>/*__JS__*/</script>
+<script>
+const D = __DADOS__;
+const C = D.cubo, NM = D.meta.meses.length, NT = D.tipos.length, ITI = D.tipos.indexOf("internacao");
+const UN = D.unidades;
+const LBL = D.meta.meses.map(F.mes);
+const $ = id => document.getElementById(id);
+const ST = {M: NM-1, op: "", emp: ""};
+
+/* ------------------------------------------------ cabeçalho e filtros */
+const MARCA = D.meta.marca || {nome:"Robô BI", sub:"Inteligência em saúde"};
+$("marcaNome").textContent = MARCA.nome; $("marcaSub").textContent = MARCA.sub;
+$("marcaSigla").textContent = MARCA.nome.split(/[\s-]+/).filter(Boolean).slice(0,2).map(p=>p[0].toUpperCase()).join("");
+const stCls = {"APROVADO":"st-ok","APROVADO COM RESSALVAS":"st-alerta","REPROVADO":"st-erro"}[D.meta.status];
+$("hdrInfo").innerHTML = `${esc(D.meta.corretora)} · dados de ${LBL[0]} até ${LBL[NM-1]}<br>Gerado em ${esc(D.meta.gerado_em)} · <span class="status-pill ${stCls}">${esc(D.meta.status)}</span>`;
+$("notaVal").textContent = "Só números aprovados pelo robô de validação";
+$("fMes").innerHTML = LBL.map((l,i)=>`<option value="${i}">${l}</option>`).join("");
+$("fMes").value = NM-1;
+const OPS = [...new Set(UN.map(u=>u.operadora))].sort();
+$("fOp").innerHTML = `<option value="">Todas</option>`+OPS.map(o=>`<option>${esc(o)}</option>`).join("");
+function preencherEmpresas(){
+  const emps = [...new Set(UN.filter(u=>!ST.op||u.operadora===ST.op).map(u=>u.empresa))].sort((a,b)=>a.localeCompare(b,"pt-BR"));
+  if(ST.emp && !emps.includes(ST.emp)) ST.emp="";
+  $("fEmp").innerHTML = `<option value="">Todas</option>`+emps.map(e=>`<option ${e===ST.emp?"selected":""}>${esc(e)}</option>`).join("");
+  const fic = $("fFicha").value;
+  $("fFicha").innerHTML = emps.map(e=>`<option>${esc(e)}</option>`).join("");
+  if(emps.includes(ST.emp)) $("fFicha").value = ST.emp; else if(emps.includes(fic)) $("fFicha").value = fic;
+}
+$("fMes").onchange = e=>{ST.M=+e.target.value; render();};
+$("fOp").onchange = e=>{ST.op=e.target.value; preencherEmpresas(); render();};
+$("fEmp").onchange = e=>{ST.emp=e.target.value; if(ST.emp) $("fFicha").value=ST.emp; render();};
+$("fFicha").onchange = ()=>renderFicha();
+
+/* ------------------------------------------------ agregações */
+const unidadesSel = (emp=ST.emp, op=ST.op) => UN.map((u,i)=>i).filter(i=>(!op||UN[i].operadora===op)&&(!emp||UN[i].empresa===emp));
+const soma = (campo, U, a, b) => { let s=0; for(const u of U) for(let m=a;m<=b;m++) s+=C[campo][u][m]; return s; };
+const serie = (campo, U, a, b) => { const r=[]; for(let m=a;m<=b;m++){ let s=0; for(const u of U) s+=C[campo][u][m]; r.push(s);} return r; };
+const somaT = (campo, U, a, b, t) => { let s=0; for(const u of U) for(let m=a;m<=b;m++) s+=C[campo][u][m][t]; return s; };
+const janela = M => [Math.max(0,M-11), M];
+function resumo(U, M){
+  const [a,b]=janela(M), n=b-a+1;
+  const premio=soma("premio",U,a,b), sinistro=soma("sinistro",U,a,b), vm=soma("vidas",U,a,b);
+  let limNum=0, limDen=0; for(const u of U){ const p=soma("premio",[u],a,b); limNum+=UN[u].limite*p; limDen+=p; }
+  const limite = limDen ? limNum/limDen : (U.length? U.reduce((s,u)=>s+UN[u].limite,0)/U.length : 0.75);
+  const tv=[],tq=[]; for(let t=0;t<NT;t++){ tv.push(somaT("tv",U,a,b,t)); tq.push(somaT("tq",U,a,b,t)); }
+  return {a,b,n, premio, sinistro, vm, limite, sin: div0(sinistro,premio),
+    vidas: soma("vidas",U,M,M), premioM: soma("premio",U,M,M), sinM: div0(soma("sinistro",U,M,M),soma("premio",U,M,M)),
+    v59: soma("v59",U,M,M), tv, tq, eventos: tq.reduce((x,y)=>x+y,0), dias: soma("dias",U,a,b),
+    semUso: soma("sem_uso",U,M,M), posExcV: soma("pos_exc_v",U,a,b), posExcN: soma("pos_exc_n",U,a,b),
+    incl: soma("incl",U,a,b), excl: soma("excl",U,a,b), tit: soma("tit",U,M,M), dep: soma("dep",U,M,M),
+    somaIdade: soma("soma_idade",U,M,M)};
+}
+function resumoAnterior(U,M){ return M-12>=0 ? resumo(U,M-12) : null; }
+const sin3 = (U,M) => { const a=Math.max(0,M-2); return div0(soma("sinistro",U,a,M), soma("premio",U,a,M)); };
+function piramide(U,M){ const m=Array(10).fill(0), f=Array(10).fill(0);
+  for(const u of U){ const p=C.pir[u][M]; for(let k=0;k<10;k++){ m[k]+=p[k]; f[k]+=p[10+k]; } } return {m,f}; }
+function rotJanela(r){ return r.n===12 ? "12 meses" : `${r.n} ${r.n===1?"mês":"meses"} (dados disponíveis)`; }
+function sinSerie(U,M){ const [a]=janela(M); const s=serie("sinistro",U,a,M), p=serie("premio",U,a,M); return s.map((x,i)=>div0(x,p[i])); }
+function sin12Serie(U,a,b){ const r=[]; for(let m=a;m<=b;m++){ const [x,y]=janela(m); r.push(div0(soma("sinistro",U,x,y),soma("premio",U,x,y))); } return r; }
+function badgeSin(s,lim){ if(s==null) return ""; const d=s-lim;
+  if(d>0) return `<span class="badge st-erro">acima do limite</span>`;
+  if(d>-0.05) return `<span class="badge st-alerta">perto do limite</span>`;
+  return `<span class="badge st-ok">dentro do limite</span>`; }
+function kpi(rot,val,sub="",extra=""){ return `<div class="card kpi"><div class="rot">${rot}</div><div class="val">${val}</div>${extra}<div class="sub">${sub}</div></div>`; }
+const empresasDe = U => [...new Set(U.map(u=>UN[u].empresa))];
+const MES_NOME = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+function mesesAteRenov(renov, M){ if(!renov) return null; const mesAtual=+D.meta.meses[M].slice(5); return ((renov-mesAtual)+12)%12 || 12; }
+
+/* concentração e top custos (a partir dos custos individuais) */
+function custosIndividuais(U,M){
+  const [a,b]=janela(M), us=new Set(U), tot=new Map(), inter=new Set();
+  for(const [bi,m,v,i] of D.custo){ if(m<a||m>b) continue; const ben=D.ben[bi]; if(!us.has(ben[1])) continue;
+    tot.set(bi,(tot.get(bi)||0)+v); if(i) inter.add(bi); }
+  return {lista:[...tot.entries()].sort((x,y)=>y[1]-x[1]), inter};
+}
+
+/* ------------------------------------------------ leitura do robô (regras) */
+function insights(U,M,ficha=false){
+  const r=resumo(U,M), out=[], ant=resumoAnterior(U,M), j=rotJanela(r);
+  if(r.sin==null){ out.push({c:"warn",h:"Sem prêmio no período: sinistralidade não calculável."}); return out; }
+  const gap=r.sin-r.limite;
+  out.push({c: gap>0?"crit":(gap>-0.05?"warn":"good"),
+    h:`Sinistralidade de ${j}: <b>${F.pct(r.sin)}</b> para limite de <b>${F.pct(r.limite)}</b> (${F.pp(gap)}). Sinistros <b>${F.brlc(r.sinistro)}</b> sobre prêmios de <b>${F.brlc(r.premio)}</b>.`});
+  const s3=sin3(U,M);
+  if(s3!=null && r.n>=6){ const d=s3-r.sin;
+    out.push({c: d>0.03?"crit":(d<-0.03?"good":""), h:`Últimos 3 meses em <b>${F.pct(s3)}</b> — ${Math.abs(d)<0.01?"estável em relação":(d>0?"acima":"abaixo")} da média de 12 meses (${F.pp(d)}). ${d>0.03?"Tendência de piora.":(d<-0.03?"Tendência de melhora.":"")}`}); }
+  if(ant && ant.vm>0 && r.vm>0){ const pa=ant.sinistro/ant.vm, pc=r.sinistro/r.vm, v=pc/pa-1;
+    out.push({c: v>0.15?"crit":(v>0.08?"warn":""), h:`Custo per capita de <b>${F.brl(pc)}</b>/vida/mês — <b>${F.var(v)}</b> sobre os 12 meses anteriores (${F.brl(pa)}).`}); }
+  if(!ficha){ const acima=[]; for(const e of empresasDe(U)){ const Ue=unidadesSel(e,ST.op).filter(u=>U.includes(u)); const re=resumo(Ue,M); if(re.sin!=null&&re.sin>re.limite) acima.push([e,re.sin,re.limite,re.premio]); }
+    acima.sort((a,b)=>(b[1]-b[2])-(a[1]-a[2]));
+    if(acima.length) out.push({c:"crit",h:`<b>${acima.length}</b> de ${empresasDe(U).length} empresa(s) acima do limite: `+acima.slice(0,5).map(x=>`${esc(x[0])} (<b>${F.pct(x[1])}</b>)`).join(", ")+(acima.length>5?"…":"")+"."});
+    else if(empresasDe(U).length>1) out.push({c:"good",h:`Todas as ${empresasDe(U).length} empresas estão dentro do limite contratual.`});
+    const prox=[]; for(const e of empresasDe(U)){ const Ue=unidadesSel(e,ST.op).filter(u=>U.includes(u)); const ma=mesesAteRenov(UN[Ue[0]].renov,M); const re=resumo(Ue,M);
+      if(ma!=null&&ma<=3&&re.sin!=null){ const tec=Math.max(0,re.sin/re.limite-1); prox.push(`${esc(e)} em ${MES_NOME[UN[Ue[0]].renov-1]} (técnico estimado <b>${F.pct(tec)}</b>)`);} }
+    if(prox.length) out.push({c:"warn",h:`Renovações nos próximos 3 meses: ${prox.join("; ")}.`});
+  } else { const u0=U[0]; const ma=mesesAteRenov(UN[u0]?.renov,M);
+    if(ma!=null){ const tec=Math.max(0,r.sin/r.limite-1); out.push({c: tec>0?"warn":"good", h:`Renovação em ${MES_NOME[UN[u0].renov-1]} (daqui a ${ma} ${ma===1?"mês":"meses"}). Reajuste técnico estimado: <b>${F.pct(tec)}</b>${UN[u0].vcmh?` + VCMH ${F.pct(UN[u0].vcmh)}`:""}.`}); } }
+  const tot=r.tv.reduce((a,b)=>a+b,0);
+  if(tot>0 && D.meta.tem_tipo){ const ord=r.tv.map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]);
+    out.push({c:"",h:`Maior peso no custo: <b>${D.tipos_label[ord[0][1]]}</b> com ${F.pct(ord[0][0]/tot)} (${F.brlc(ord[0][0])}), seguido de ${D.tipos_label[ord[1][1]]} com ${F.pct(ord[1][0]/tot)}.`}); }
+  const ci=custosIndividuais(U,M); if(ci.lista.length && r.sinistro>0){ const N=Math.max(r.vidas,ci.lista.length), k=Math.max(1,Math.ceil(N*0.01));
+    const s=ci.lista.slice(0,k).reduce((a,x)=>a+x[1],0)/r.sinistro;
+    out.push({c: s>0.3?"warn":"", h:`Concentração: <b>${F.int(k)}</b> vida(s) (1% da população) responderam por <b>${F.pct(s)}</b> do custo. ${s>0.3?"Casos crônicos/alto custo merecem gestão de saúde dedicada.":""}`}); }
+  if(r.vidas>0){ out.push({c: r.v59/r.vidas>0.1?"warn":"", h:`<b>${F.pct(r.v59/r.vidas)}</b> das vidas têm 59 anos ou mais (${F.int(r.v59)} de ${F.int(r.vidas)}); idade média de <b>${nf1.format(r.somaIdade/r.vidas)}</b> anos.`}); }
+  if(r.posExcV>0) out.push({c:"crit",h:`<b>${F.brl(r.posExcV)}</b> em ${F.int(r.posExcN)} atendimento(s) após a exclusão do beneficiário — valor contestável junto à operadora.`});
+  const dep=D.eleg.dep_acima.filter(d=>U.includes(d.u)).length;
+  if(dep) out.push({c:"warn",h:`<b>${dep}</b> dependente(s) acima de ${D.meta.idade_limite_dependente} anos ainda ativo(s) — verificar elegibilidade.`});
+  return out;
+}
+const listaIns = (el,arr)=>{ el.innerHTML = arr.map(i=>`<li class="${i.c}">${i.h}</li>`).join("") || '<li>Sem observações.</li>'; };
+
+/* ------------------------------------------------ abas */
+function render(){
+  const U=unidadesSel(), M=ST.M, r=resumo(U,M), j=rotJanela(r), [a,b]=janela(M);
+  if(!U.length){ document.querySelectorAll(".aba").forEach(x=>x.querySelectorAll(".kpis").forEach(k=>k.innerHTML='<div class="vazio">Nenhuma empresa no filtro</div>')); return; }
+  const pmpm=div0(r.sinistro,r.vm);
+
+  /* 01 */
+  $("k1").innerHTML = kpi("Vidas",F.int(r.vidas),`${F.pct(div0(r.v59,r.vidas))} com 59+`)
+    + kpi(`Prêmio · ${j}`,F.brlc(r.premio),`${F.brlc(r.premioM)} no mês`)
+    + kpi(`Sinistros · ${j}`,F.brlc(r.sinistro),`${F.int(r.eventos)} eventos`)
+    + kpi(`Sinistralidade · ${j}`,F.pct(r.sin),`limite ${F.pct(r.limite)}`,badgeSin(r.sin,r.limite))
+    + kpi("Custo per capita",F.brl(pmpm),"por vida por mês");
+  listaIns($("ins1"), insights(U,M));
+  grafLinha($("c1"),{labels:LBL.slice(a,b+1),series:[{nome:"Sinistralidade",v:sinSerie(U,M),cor:"var(--s2)"}],fmt:F.pct,ref:r.limite,refRot:"limite "+F.pct(r.limite),h:280});
+  const cont={}; D.validacao.forEach(v=>cont[v.status]=(cont[v.status]||0)+1);
+  $("valResumo").innerHTML = `Resultado geral: <span class="status-pill ${stCls}">${esc(D.meta.status)}</span> · ${["OK","ALERTA","INFO","ERRO"].filter(s=>cont[s]).map(s=>`${cont[s]} ${s}`).join(" · ")}`;
+
+  /* 02 */
+  const emps=empresasDe(U), linhasEmp=emps.map(e=>{ const Ue=U.filter(u=>UN[u].empresa===e), re=resumo(Ue,M), s3=sin3(Ue,M);
+    return {empresa:e, operadora:[...new Set(Ue.map(u=>UN[u].operadora))].join(", "), vidas:re.vidas, premioM:re.premioM, premio:re.premio,
+      sinistro:re.sinistro, sin:re.sin, limite:re.limite, gap:re.sin==null?null:re.sin-re.limite, s3, tend:(s3!=null&&re.sin!=null)?s3-re.sin:null,
+      renov:UN[Ue[0]].renov, ate:mesesAteRenov(UN[Ue[0]].renov,M), pmpm:div0(re.sinistro,re.vm)}; });
+  const acima=linhasEmp.filter(l=>l.gap>0).length;
+  $("k2").innerHTML = kpi("Empresas",F.int(emps.length),`${OPS.filter(o=>U.some(u=>UN[u].operadora===o)).length} operadora(s)`)
+    + kpi("Vidas",F.int(r.vidas),`${F.int(r.incl)} inclusões · ${F.int(r.excl)} exclusões em ${j}`)
+    + kpi("Prêmio/mês",F.brlc(r.premioM),LBL[M])
+    + kpi("Acima do limite",F.int(acima),`de ${emps.length} empresa(s)`,acima?'<span class="badge st-erro">atenção</span>':'<span class="badge st-ok">ok</span>');
+  tabela($("t2"),{cols:[
+    {k:"empresa",t:"Empresa"},{k:"operadora",t:"Operadora"},{k:"vidas",t:"Vidas",n:1,f:F.int},{k:"premioM",t:"Prêmio/mês",n:1,f:F.brlc},
+    {k:"sin",t:"Sinistr. 12m",n:1,f:v=>F.pct(v)},{k:"limite",t:"Limite",n:1,f:F.pct},
+    {k:"gap",t:"Dif.",n:1,f:v=>v==null?"—":`<span style="color:${v>0?'var(--crit)':'var(--good)'}">${F.pp(v)}</span>`},
+    {k:"s3",t:"Últ. 3m",n:1,f:F.pct},{k:"tend",t:"Tendência",n:1,f:v=>v==null?"—":(v>0.03?`<span style="color:var(--crit)">▲ piora</span>`:v<-0.03?`<span style="color:var(--good)">▼ melhora</span>`:"● estável")},
+    {k:"pmpm",t:"Per capita",n:1,f:F.brl},{k:"renov",t:"Renovação",f:(v,rw)=>v?`${MES_NOME[v-1]} (${rw.ate}m)`:"—",ord:rw=>rw.ate}],
+    linhas:linhasEmp, ordem:["premio",-1]});
+  grafBarrasH($("c2"),{itens:linhasEmp.filter(l=>l.sin!=null).sort((x,y)=>y.sin-x.sin).map(l=>({r:l.empresa,v:l.sin,cor:l.gap>0?"var(--s2)":"var(--s1)",
+    tip:`${esc(l.empresa)}<br>Sinistralidade: <b>${F.pct(l.sin)}</b><br>Limite: ${F.pct(l.limite)}`})),fmt:F.pct,extra:it=>"lim "+F.pct(linhasEmp.find(l=>l.empresa===it.r).limite)});
+  const porOp=OPS.map(o=>{ const Uo=U.filter(u=>UN[u].operadora===o); if(!Uo.length) return null; const ro=resumo(Uo,M);
+    return {op:o, emp:empresasDe(Uo).length, vidas:ro.vidas, premio:ro.premio, sinistro:ro.sinistro, sin:ro.sin}; }).filter(Boolean);
+  tabela($("t2b"),{cols:[{k:"op",t:"Operadora"},{k:"emp",t:"Empresas",n:1},{k:"vidas",t:"Vidas",n:1,f:F.int},{k:"premio",t:"Prêmio 12m",n:1,f:F.brlc},{k:"sinistro",t:"Sinistro 12m",n:1,f:F.brlc},{k:"sin",t:"Sinistr.",n:1,f:F.pct}],linhas:porOp,ordem:["premio",-1]});
+
+  /* 03 */
+  const pir=piramide(U,M), totPir=pir.m.reduce((x,y)=>x+y,0)+pir.f.reduce((x,y)=>x+y,0);
+  $("k3").innerHTML = kpi("Idade média",r.vidas?nf1.format(r.somaIdade/r.vidas)+" anos":"—","no fim do mês")
+    + kpi("59 anos ou mais",F.pct(div0(r.v59,r.vidas)),`${F.int(r.v59)} vidas`)
+    + kpi("Titulares × dependentes",D.meta.tem_titularidade?`${F.int(r.tit)} × ${F.int(r.dep)}`:"—",D.meta.tem_titularidade?`${nf2.format(div0(r.dep,r.tit)||0)} dependente(s) por titular`:"titularidade não informada")
+    + kpi("Feminino",F.pct(div0(pir.f.reduce((x,y)=>x+y,0),totPir)),`${F.int(r.vidas-totPir)} sem sexo informado`);
+  grafPiramide($("c3"),{faixas:D.faixas,m:pir.m,f:pir.f});
+  grafColunas($("c3b"),{labels:LBL.slice(a,b+1),v:serie("vidas",U,a,b),fmt:F.int,h:220});
+  tabela($("t3"),{cols:[{k:"f",t:"Faixa"},{k:"m",t:"Masc.",n:1,f:F.int},{k:"fe",t:"Fem.",n:1,f:F.int},{k:"t",t:"Total",n:1,f:F.int},{k:"p",t:"%",n:1,f:F.pct}],
+    linhas:D.faixas.map((fx,k)=>({f:fx,m:pir.m[k],fe:pir.f[k],t:pir.m[k]+pir.f[k],p:div0(pir.m[k]+pir.f[k],totPir)}))});
+
+  /* 04 */
+  const totT=r.tv.reduce((x,y)=>x+y,0), ci=custosIndividuais(U,M);
+  $("k4").innerHTML = kpi("Custo per capita",F.brl(pmpm),`por vida/mês · ${j}`)
+    + kpi("Custo médio por evento",F.brl(div0(r.sinistro,r.eventos)),`${F.int(r.eventos)} eventos`)
+    + kpi("Eventos por vida/ano",r.vm?nf1.format(r.eventos/r.vm*12):"—","frequência geral")
+    + kpi("Vidas sem uso em 12m",r.n===12?F.pct(div0(r.semUso,r.vidas)):"—",r.n===12?`${F.int(r.semUso)} vidas`:"precisa de 12 meses de dados");
+  grafBarrasH($("c4"),{itens:D.tipos.map((t,i)=>({r:D.tipos_label[i],v:r.tv[i]})).filter(x=>x.v).sort((x,y)=>y.v-x.v),fmt:F.brlc,extra:it=>F.pct(it.v/totT)});
+  grafLinha($("c4b"),{labels:LBL.slice(a,b+1),series:[{nome:"Per capita",v:serie("sinistro",U,a,b).map((s,i)=>div0(s,serie("vidas",U,a,b)[i])),cor:"var(--s1)"}],fmt:F.brl,fmtEixo:F.brl0,zero:true,h:260});
+  tabela($("t4"),{cols:[{k:"t",t:"Tipo"},{k:"q",t:"Eventos",n:1,f:F.int},{k:"fr",t:"Por mil vidas/ano",n:1,f:v=>v==null?"—":nf1.format(v)},{k:"cm",t:"Custo médio",n:1,f:F.brl},{k:"v",t:"Custo total",n:1,f:F.brlc},{k:"p",t:"% custo",n:1,f:F.pct},{k:"pc",t:"Per capita/mês",n:1,f:F.brl}],
+    linhas:D.tipos.map((t,i)=>({t:D.tipos_label[i],q:r.tq[i],fr:r.vm?r.tq[i]/r.vm*12000:null,cm:div0(r.tv[i],r.tq[i]),v:r.tv[i],p:div0(r.tv[i],totT),pc:div0(r.tv[i],r.vm)})).filter(x=>x.v||x.q),ordem:["v",-1]});
+  const dM=D.meta.meses[M], refY=+dM.slice(0,4), refM=+dM.slice(5)-1;
+  tabela($("t4b"),{cols:[{k:"i",t:"#",n:1},{k:"id",t:"Código"},{k:"emp",t:"Empresa"},{k:"sx",t:"Sexo"},{k:"id2",t:"Idade",n:1},{k:"v",t:"Custo 12m",n:1,f:F.brl},{k:"p",t:"% do total",n:1,f:F.pct},{k:"int",t:"Internou",f:v=>v?"sim":"não"}],
+    linhas:ci.lista.slice(0,50).map(([bi,v],k)=>{ const bn=D.ben[bi]; return {i:k+1,id:bn[0],emp:UN[bn[1]].empresa,sx:["M","F","—"][bn[2]],id2:Math.floor((refY*12+refM-bn[3])/12),v,p:div0(v,r.sinistro),int:ci.inter.has(bi)}; })});
+  const Nc=Math.max(r.vidas,ci.lista.length), conc=[0.01,0.05,0.1,0.2].map(p=>{ const k=Math.max(1,Math.ceil(Nc*p)); return {r:`${p*100}% das vidas (${F.int(k)})`,v:div0(ci.lista.slice(0,k).reduce((s,x)=>s+x[1],0),r.sinistro)||0}; });
+  grafBarrasH($("c4c"),{itens:conc,fmt:F.pct,max:1,cor:"var(--s2)"});
+
+  /* 05 */
+  const qi=r.tq[ITI], vi=r.tv[ITI];
+  $("k5").innerHTML = kpi(`Internações · ${j}`,F.int(qi),`${F.brlc(vi)}`)
+    + kpi("Taxa de internação",r.vm?nf1.format(qi/r.vm*12000):"—","por mil vidas/ano")
+    + kpi("Custo médio",F.brl(div0(vi,qi)),"por internação")
+    + kpi("Permanência média",r.dias>0?nf1.format(r.dias/qi)+" dias":"—",r.dias>0?`${F.int(r.dias)} diárias`:"diárias não informadas")
+    + kpi("Peso no custo",F.pct(div0(vi,totT)),"do sinistro total");
+  const qs=[],vs=[]; for(let m=a;m<=b;m++){ qs.push(somaT("tq",U,m,m,ITI)); vs.push(somaT("tv",U,m,m,ITI)); }
+  grafColunas($("c5"),{labels:LBL.slice(a,b+1),v:qs,fmt:F.int,h:240});
+  grafColunas($("c5b"),{labels:LBL.slice(a,b+1),v:vs,fmt:F.brlc,cor:"var(--s3)",h:240});
+  tabela($("t5"),{cols:[{k:"e",t:"Empresa"},{k:"q",t:"Internações",n:1,f:F.int},{k:"tx",t:"Por mil vidas/ano",n:1,f:v=>v==null?"—":nf1.format(v)},{k:"cm",t:"Custo médio",n:1,f:F.brl},{k:"v",t:"Custo",n:1,f:F.brlc},{k:"p",t:"% custo empresa",n:1,f:F.pct},{k:"pm",t:"Permanência",n:1,f:v=>v==null?"—":nf1.format(v)+" d"}],
+    linhas:emps.map(e=>{ const Ue=U.filter(u=>UN[u].empresa===e), re=resumo(Ue,M), q=re.tq[ITI], v=re.tv[ITI];
+      return {e,q,tx:re.vm?q/re.vm*12000:null,cm:div0(v,q),v,p:div0(v,re.sinistro),pm:re.dias>0?re.dias/q:null}; }),ordem:["v",-1]});
+
+  /* 06 */
+  const linhasRen=linhasEmp.map(l=>{ const vc=UN[U.find(u=>UN[u].empresa===l.empresa)].vcmh||0; const tec=l.sin==null?null:Math.max(0,l.sin/l.limite-1);
+    return {...l, tec, vcmh:vc, total:tec==null?null:(1+tec)*(1+vc)-1}; });
+  const ren3=linhasRen.filter(l=>l.ate!=null&&l.ate<=3);
+  $("k6").innerHTML = kpi(`Sinistralidade · ${j}`,F.pct(r.sin),`limite ${F.pct(r.limite)}`,badgeSin(r.sin,r.limite))
+    + kpi("Sinistralidade do mês",F.pct(r.sinM),LBL[M])
+    + kpi("Últimos 3 meses",F.pct(sin3(U,M)),"acumulado")
+    + kpi("Renovam em até 3 meses",F.int(ren3.length),ren3.length?`${F.int(ren3.reduce((s,l)=>s+l.vidas,0))} vidas`:"nenhuma");
+  const a6=0; grafLinha($("c6"),{labels:LBL.slice(a6,M+1),series:[
+      {nome:"Mensal",v:serie("sinistro",U,a6,M).map((s,i)=>div0(s,serie("premio",U,a6,M)[i])),cor:"var(--s1)"},
+      {nome:"Acumulada 12m",v:sin12Serie(U,a6,M),cor:"var(--s2)"}],fmt:F.pct,ref:r.limite,refRot:"limite "+F.pct(r.limite)});
+  tabela($("t6"),{cols:[{k:"empresa",t:"Empresa"},{k:"renov",t:"Renovação",f:v=>v?MES_NOME[v-1]:"não informada"},{k:"ate",t:"Faltam",n:1,f:v=>v==null?"—":v+(v===1?" mês":" meses")},
+    {k:"vidas",t:"Vidas",n:1,f:F.int},{k:"sin",t:"Sinistr. 12m",n:1,f:F.pct},{k:"limite",t:"Limite",n:1,f:F.pct},
+    {k:"tec",t:"Reajuste técnico",n:1,f:v=>v==null?"—":`<b style="color:${v>0?'var(--crit)':'var(--good)'}">${F.pct(v)}</b>`},{k:"vcmh",t:"VCMH",n:1,f:F.pct},{k:"total",t:"Indicativo total",n:1,f:F.pct}],
+    linhas:linhasRen,ordem:["ate",1]});
+
+  /* 07 */
+  const pe=D.eleg.pos_exc.filter(x=>U.includes(x.u)&&x.m<=M), pi=D.eleg.pre_inc.filter(x=>U.includes(x.u)&&x.m<=M), da=D.eleg.dep_acima.filter(x=>U.includes(x.u));
+  $("k7").innerHTML = kpi(`Inclusões · ${j}`,F.int(r.incl),`exclusões: ${F.int(r.excl)}`)
+    + kpi("Saldo de vidas",(r.incl-r.excl>=0?"+":"")+F.int(r.incl-r.excl),j)
+    + kpi("Sinistros após exclusão",F.brlc(pe.reduce((s,x)=>s+x.valor,0)),`${pe.length} atendimento(s) até ${LBL[M]}`,pe.length?'<span class="badge st-erro">contestar</span>':'<span class="badge st-ok">nenhum</span>')
+    + kpi(`Dependentes > ${D.meta.idade_limite_dependente} anos`,F.int(da.length),"ativos",da.length?'<span class="badge st-alerta">verificar</span>':'<span class="badge st-ok">nenhum</span>');
+  grafLinha($("c7"),{labels:LBL.slice(a,b+1),series:[{nome:"Inclusões",v:serie("incl",U,a,b),cor:"var(--s1)"},{nome:"Exclusões",v:serie("excl",U,a,b),cor:"var(--s2)"}],fmt:F.int,zero:true,h:260});
+  const nomeU=u=>UN[u].empresa, dt=s=>s.split("-").reverse().join("/");
+  tabela($("t7a"),{cols:[{k:"id",t:"Código"},{k:"u",t:"Empresa",f:nomeU},{k:"exc",t:"Exclusão",f:dt},{k:"atend",t:"Atendimento",f:dt},{k:"tipo",t:"Tipo"},{k:"valor",t:"Valor",n:1,f:F.brl}],linhas:pe,ordem:["valor",-1]});
+  $("t7bTit").textContent=`Dependentes acima de ${D.meta.idade_limite_dependente} anos`;
+  tabela($("t7b"),{cols:[{k:"id",t:"Código"},{k:"u",t:"Empresa",f:nomeU},{k:"parentesco",t:"Parentesco"},{k:"idade",t:"Idade",n:1},{k:"inc",t:"Inclusão",f:dt}],linhas:da,ordem:["idade",-1]});
+  tabela($("t7c"),{cols:[{k:"id",t:"Código"},{k:"u",t:"Empresa",f:nomeU},{k:"inc",t:"Inclusão",f:dt},{k:"atend",t:"Atendimento",f:dt},{k:"valor",t:"Valor",n:1,f:F.brl}],linhas:pi,ordem:["valor",-1]});
+
+  /* 08 */
+  linhasMes = []; for(let m=0;m<=M;m++){ const vd=soma("vidas",U,m,m), p=soma("premio",U,m,m), s=soma("sinistro",U,m,m), [x,y]=janela(m);
+    let ev=0; for(let t=0;t<NT;t++) ev+=somaT("tq",U,m,m,t);
+    const sAnt=m>0?soma("sinistro",U,m-1,m-1):null;
+    linhasMes.push({m:LBL[m],ord:m,vidas:vd,incl:soma("incl",U,m,m),excl:soma("excl",U,m,m),premio:p,sinistro:s,sin:div0(s,p),
+      s12:div0(soma("sinistro",U,x,y),soma("premio",U,x,y)),pp:div0(p,vd),pc:div0(s,vd),ev,int:somaT("tq",U,m,m,ITI),
+      vs:sAnt?s/sAnt-1:null}); }
+  tabela($("t8"),{cols:[{k:"m",t:"Competência",ord:r=>r.ord},{k:"vidas",t:"Vidas",n:1,f:F.int},{k:"incl",t:"Incl.",n:1,f:F.int},{k:"excl",t:"Excl.",n:1,f:F.int},
+    {k:"premio",t:"Prêmio",n:1,f:F.brl},{k:"sinistro",t:"Sinistro",n:1,f:F.brl},{k:"vs",t:"Var. sinistro",n:1,f:F.var},
+    {k:"sin",t:"Sinistr. mês",n:1,f:(v)=>v==null?"—":`<span style="color:${v>r.limite?'var(--crit)':'inherit'}">${F.pct(v)}</span>`},{k:"s12",t:"Sinistr. 12m",n:1,f:F.pct},
+    {k:"pp",t:"Prêmio/vida",n:1,f:F.brl},{k:"pc",t:"Custo/vida",n:1,f:F.brl},{k:"ev",t:"Eventos",n:1,f:F.int},{k:"int",t:"Internações",n:1,f:F.int}],
+    linhas:linhasMes,ordem:["m",-1]});
+
+  renderFicha();
+}
+let linhasMes=[];
+$("btnCsv").onclick=()=>{ const cab=["competencia","vidas","inclusoes","exclusoes","premio","sinistro","sinistralidade_mes","sinistralidade_12m","premio_por_vida","custo_por_vida","eventos","internacoes"];
+  const n=v=>v==null?"":String(Math.round(v*10000)/10000).replace(".",",");
+  const txt=[cab.join(";")].concat(linhasMes.map(r=>[r.m,r.vidas,r.incl,r.excl,r.premio,r.sinistro,r.sin,r.s12,r.pp,r.pc,r.ev,r.int].map((v,i)=>i?n(v):v).join(";"))).join("\n");
+  const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob(["﻿"+txt],{type:"text/csv"})); a.download="mes_a_mes.csv"; a.click(); };
+
+function renderFicha(){
+  const e=$("fFicha").value; if(!e){ $("k9").innerHTML='<div class="vazio">Selecione uma empresa</div>'; return; }
+  const U=unidadesSel(e,ST.op), M=ST.M, r=resumo(U,M), [a,b]=janela(M), j=rotJanela(r);
+  const renov=UN[U[0]].renov;
+  $("k9").innerHTML = kpi("Operadora",esc([...new Set(U.map(u=>UN[u].operadora))].join(", ")),"")
+    + kpi("Vidas",F.int(r.vidas),`${F.pct(div0(r.v59,r.vidas))} com 59+`)
+    + kpi("Prêmio/mês",F.brlc(r.premioM),"")
+    + kpi(`Sinistralidade · ${j}`,F.pct(r.sin),`limite ${F.pct(r.limite)}${UN[U[0]].limite_padrao?" (padrão)":""}`,badgeSin(r.sin,r.limite))
+    + kpi("Renovação",renov?MES_NOME[renov-1].slice(0,3)==="mar"&&renov===3?"março":MES_NOME[renov-1]:"—",renov?`em ${mesesAteRenov(renov,M)} ${mesesAteRenov(renov,M)===1?"mês":"meses"}`:"sem contrato cadastrado");
+  grafLinha($("c9"),{labels:LBL.slice(a,b+1),series:[{nome:"Sinistralidade",v:sinSerie(U,M),cor:"var(--s2)"}],fmt:F.pct,ref:r.limite,refRot:"limite "+F.pct(r.limite)});
+  const p=piramide(U,M); grafPiramide($("c9b"),{faixas:D.faixas,m:p.m,f:p.f});
+  const tot=r.tv.reduce((x,y)=>x+y,0);
+  grafBarrasH($("c9c"),{itens:D.tipos.map((t,i)=>({r:D.tipos_label[i],v:r.tv[i]})).filter(x=>x.v).sort((x,y)=>y.v-x.v),fmt:F.brlc,extra:it=>F.pct(it.v/tot)});
+  listaIns($("ins9"), insights(U,M,true));
+}
+
+painelValidacao($("val1"), D.validacao);
+preencherEmpresas();
+abas($("abas"), ()=>render());
+aoRedimensionar(render);
+</script>
+</body>
+</html>

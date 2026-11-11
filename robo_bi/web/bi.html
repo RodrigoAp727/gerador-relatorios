@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel de Inteligência</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>/*__CSS__*/
+.heat td.n{font-size:12px}
+.f-din{display:contents}
+.cel-heat{border-radius:4px}
+</style>
+</head>
+<body>
+<header class="card topo">
+  <div class="logo"><div class="marca" id="marcaSigla"></div><div><b id="marcaNome"></b><small id="marcaSub"></small></div></div>
+  <h1 id="titulo"></h1>
+  <div class="info" id="hdrInfo"></div>
+</header>
+
+<nav class="abas" id="abas">
+  <button data-aba="a1"><span>01</span>Resumo executivo</button>
+  <button data-aba="a2"><span>02</span>Evolução</button>
+  <button data-aba="a3"><span>03</span>Rankings e quebras</button>
+  <button data-aba="a4"><span>04</span>Cruzamentos</button>
+  <button data-aba="a5"><span>05</span>Ficha</button>
+  <button data-aba="a6"><span>06</span>Distribuição</button>
+  <button data-aba="a7"><span>07</span>Qualidade dos dados</button>
+  <button data-aba="a8"><span>08</span>Dados</button>
+</nav>
+
+<div class="card filtros" id="filtros">
+  <label for="fTab">Base</label><select id="fTab"></select>
+  <span id="fPer" class="f-din"><label for="fDe">De</label><select id="fDe"></select><label for="fAte">Até</label><select id="fAte"></select></span>
+  <span id="fDin" class="f-din"></span>
+  <span class="nota">Só números aprovados pelo robô de validação</span>
+</div>
+
+<section class="aba" id="a1">
+  <div class="kpis" id="k1"></div>
+  <div class="grid21">
+    <div class="card painel"><h3>Leitura do robô</h3><p class="desc">Conclusões geradas por regras fixas sobre os números filtrados — sem estimativas.</p><ul class="insights" id="ins1"></ul></div>
+    <div class="card painel"><h3 id="c1t"></h3><p class="desc" id="c1d"></p><div class="chart" id="c1"></div></div>
+  </div>
+  <div class="card painel" id="p1b"><h3 id="t1t"></h3><p class="desc">Todas as métricas por item · clique no cabeçalho para ordenar</p><div class="rolagem" id="t1"></div></div>
+</section>
+
+<section class="aba" id="a2">
+  <div class="card painel" style="margin-bottom:12px">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+      <label>Métrica</label><select class="sel" id="e2m"></select>
+      <label>Agrupar por</label><select class="sel" id="e2g"><option value="m">Mês</option><option value="t">Trimestre</option><option value="a">Ano</option></select>
+      <label>Abrir por</label><select class="sel" id="e2d"><option value="">— total —</option></select>
+    </div>
+    <div class="chart" id="c2"></div></div>
+  <div class="card painel"><h3>Tabela do período</h3><p class="desc">Variação contra o período anterior e contra o mesmo período do ano anterior</p><div class="rolagem" id="t2"></div></div>
+</section>
+
+<section class="aba" id="a3">
+  <div class="card painel" style="margin-bottom:12px">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <label>Quebrar por</label><select class="sel" id="e3d"></select><label>Ordenar pela métrica</label><select class="sel" id="e3m"></select></div></div>
+  <div class="grid2">
+    <div class="card painel"><h3 id="c3t"></h3><p class="desc" id="c3d"></p><div id="c3"></div></div>
+    <div class="card painel"><h3>Curva ABC (Pareto)</h3><p class="desc">Quantos itens concentram o total</p><div id="c3b"></div></div>
+  </div>
+  <div class="card painel"><h3>Tabela completa</h3><div class="rolagem" id="t3"></div></div>
+</section>
+
+<section class="aba" id="a4">
+  <div class="card painel">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+      <label>Linhas</label><select class="sel" id="e4a"></select><label>Colunas</label><select class="sel" id="e4b"></select><label>Métrica</label><select class="sel" id="e4m"></select></div>
+    <p class="desc">Matriz com os 15 maiores itens de cada lado · cor mais forte = valor maior</p>
+    <div class="rolagem" style="max-height:640px" id="t4"></div></div>
+</section>
+
+<section class="aba" id="a5">
+  <div class="card secao-titulo"><h2>Ficha</h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><select class="sel" id="e5d"></select><select class="sel" id="e5v" style="min-width:240px"></select></div></div>
+  <div class="kpis" id="k5"></div>
+  <div class="grid2">
+    <div class="card painel"><h3 id="c5t"></h3><div class="chart" id="c5"></div></div>
+    <div class="card painel"><h3>Leitura do robô</h3><ul class="insights" id="ins5"></ul></div>
+  </div>
+  <div class="grid2" id="g5"></div>
+</section>
+
+<section class="aba" id="a6">
+  <div class="card painel" style="margin-bottom:12px"><div style="display:flex;gap:10px;align-items:center"><label>Coluna numérica</label><select class="sel" id="e6c"></select></div></div>
+  <div class="kpis" id="k6"></div>
+  <div class="card painel"><h3>Histograma</h3><p class="desc">Quantidade de registros por faixa de valor</p><div class="chart" id="c6"></div></div>
+</section>
+
+<section class="aba" id="a7">
+  <div class="kpis" id="k7"></div>
+  <div class="card painel" style="margin-bottom:12px"><h3>Robô de validação</h3><p class="desc">Cada regra aplicada aos dados, com o que foi feito</p><div class="rolagem" id="v7"></div></div>
+  <div class="card painel"><h3>Perfil das colunas</h3><p class="desc">Como o robô interpretou cada coluna</p><div class="rolagem" id="t7"></div></div>
+</section>
+
+<section class="aba" id="a8">
+  <div class="card painel"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
+    <input class="sel" id="busca" placeholder="Buscar em todas as colunas…" style="min-width:280px">
+    <span id="nReg" style="color:var(--muted)"></span><button class="sel" id="btnCsv" style="cursor:pointer;min-width:0;margin-left:auto">Baixar CSV filtrado</button></div>
+    <div class="rolagem" style="max-height:680px" id="t8"></div></div>
+</section>
+
+<div class="card metodo" id="metodo"></div>
+
+<script>/*__JS__*/</script>
+<script>
+const D = __DADOS__;
+const $ = id => document.getElementById(id);
+const MARCA = D.meta.marca || {nome:"Robô BI", sub:"Inteligência de dados"};
+$("marcaNome").textContent=MARCA.nome; $("marcaSub").textContent=MARCA.sub;
+$("marcaSigla").textContent=MARCA.nome.split(/[\s-]+/).filter(Boolean).slice(0,2).map(p=>p[0].toUpperCase()).join("");
+$("titulo").textContent=D.meta.titulo;
+document.title=D.meta.titulo.split(" ").slice(0,4).join(" ");
+const todasRegras=D.validacao_geral.concat(...D.tabelas.map(t=>t.validacao));
+const nErr=todasRegras.filter(r=>r.status==="ERRO").length, nAl=todasRegras.filter(r=>r.status==="ALERTA").length;
+const stG=nErr?["REPROVADO","st-erro"]:nAl?["APROVADO COM RESSALVAS","st-alerta"]:["APROVADO","st-ok"];
+const FMT={brl:F.brlc,brlT:F.brl,pct:F.pct,pct3:v=>v==null||!isFinite(v)?"—":(v*100).toLocaleString("pt-BR",{minimumFractionDigits:3,maximumFractionDigits:3})+"%",
+  int:F.int,num:F.comp,numT:F.num,dec:v=>v==null||!isFinite(v)?"—":nf1.format(v)};
+const fmtK=s=>FMT[s.fmt]||F.comp, fmtT=s=>s.fmt==="brl"?F.brl:s.fmt==="num"?F.num:(FMT[s.fmt]||F.num);
+const aditiva=s=>!s.den&&(s.num.op==="sum"||s.num.op==="count");
+
+/* ---------------------------------------------- preparo da base */
+let T,COL,MES,MI,ST;
+function prepararTabela(ti){
+  T=D.tabelas[ti]; COL={}; T.colunas.forEach(c=>COL[c.nome]=c);
+  MES=[]; MI=null;
+  if(T.data){ const v=COL[T.data].v; const set=new Set(); v.forEach(x=>{ if(x) set.add(x.slice(0,7)); });
+    MES=[...set].sort(); const pos=Object.fromEntries(MES.map((m,i)=>[m,i])); MI=new Int16Array(T.n);
+    for(let i=0;i<T.n;i++) MI[i]=v[i]?pos[v[i].slice(0,7)]:-1; }
+  ST={de:0,ate:Math.max(0,MES.length-1),f:{}};
+  const dims=dimensoes();
+  $("fPer").style.display=MES.length?"contents":"none";
+  $("fDe").innerHTML=$("fAte").innerHTML=MES.map((m,i)=>`<option value="${i}">${F.mes(m)}</option>`).join("");
+  $("fDe").value=0; $("fAte").value=MES.length-1;
+  if(T.parcial&&MES.length>1&&MES[MES.length-1]===T.parcial.mes){ ST.ate=MES.length-2; $("fAte").value=ST.ate;
+    $("fAte").options[MES.length-1].textContent+=" (parcial)"; $("fDe").options[MES.length-1].textContent+=" (parcial)"; }
+  const pref=(T.perfil.dims||[]).filter(c=>dims.includes(c));
+  const filtraveis=pref.concat(dims.filter(c=>!pref.includes(c)&&c!=="Origem")).filter(c=>COL[c].dic.length<=300).slice(0,4);
+  $("fDin").innerHTML=filtraveis.map((c,k)=>`<label for="fd${k}">${esc(c)}</label><select id="fd${k}" data-col="${esc(c)}"><option value="-1">Todos</option>${COL[c].dic.map((v,i)=>`<option value="${i}">${esc(v)}</option>`).join("")}</select>`).join("");
+  $("fDin").querySelectorAll("select").forEach(s=>s.onchange=()=>{ ST.f[s.dataset.col]=+s.value; render(); });
+  const opsM=T.specs.map((s,i)=>`<option value="${i}">${esc(s.nome)}</option>`).join("");
+  ["e2m","e3m","e4m"].forEach(id=>$(id).innerHTML=opsM);
+  const opsD=dims.map(c=>`<option>${esc(c)}</option>`).join("");
+  $("e2d").innerHTML=`<option value="">— total —</option>`+opsD;
+  ["e3d","e4a","e5d"].forEach(id=>$(id).innerHTML=opsD);
+  $("e4b").innerHTML=opsD; if(dims.length>1) $("e4b").value=dims[1];
+  const pd=T.perfil.dim_principal; if(pd&&dims.includes(pd)){ $("e3d").value=pd; $("e4a").value=pd; $("e5d").value=pd;
+    const com=(T.perfil.dims_comuns||dims).filter(d=>d!==pd&&dims.includes(d)); if(com.length) $("e4b").value=com.includes("UF")?"UF":com[0];
+    else if($("e4b").value===pd&&dims.length>1) $("e4b").value=dims.find(d=>d!==pd); }
+  const sinIdx=T.specs.findIndex(s=>s.nome==="Sinistralidade"); if(sinIdx>=0) $("e4m").value=sinIdx;
+  const nums=T.colunas.filter(c=>c.tipo==="numero").map(c=>c.nome);
+  $("e6c").innerHTML=nums.map(c=>`<option>${esc(c)}</option>`).join("");
+  preencherFichaValores();
+  $("metodo").innerHTML=metodologia();
+}
+function dimensoes(){ return T.categorias.filter(c=>COL[c]&&COL[c].dic&&COL[c].dic.length>1); }
+
+/* ---------------------------------------------- filtros e cálculo */
+function filtrar({semData=false,de=ST.de,ate=ST.ate,extra=null}={}){
+  const out=[], fs=Object.entries(ST.f).filter(([c,v])=>v>=0).map(([c,v])=>[COL[c].v,v]);
+  if(extra) fs.push([COL[extra[0]].v,extra[1]]);
+  const usaData=MI&&!semData;
+  for(let i=0;i<T.n;i++){
+    if(usaData && (MI[i]<de||MI[i]>ate)) continue;
+    let ok=true; for(const [v,x] of fs){ if(v[i]!==x){ok=false;break;} } if(ok) out.push(i);
+  }
+  return out;
+}
+function agregado(op,idx){
+  if(op.op==="count") return idx.length;
+  if(op.op==="sum_many"){ let s=0; for(const c of op.cols){ const v=COL[c].v; for(const i of idx){ const x=v[i]; if(x!=null) s+=x; } } return s; }
+  const v=COL[op.col]?.v; if(!v) return null;
+  if(op.op==="sum"){ let s=0; for(const i of idx){ const x=v[i]; if(x!=null) s+=x; } return s; }
+  if(op.op==="avg"){ let s=0,n=0; for(const i of idx){ const x=v[i]; if(x!=null){s+=x;n++;} } return n?s/n:null; }
+  if(op.op==="distinct"){ const f=op.filtro_col?COL[op.filtro_col].v:null, set=new Set();
+    for(const i of idx){ const x=v[i]; if(x!=null&&x!==-1&&(!f||f[i]!=null)) set.add(x); } return set.size; }
+  return null;
+}
+function calc(spec,idx){ const n=agregado(spec.num,idx); if(!spec.den) return n; const d=agregado(spec.den,idx); return d?n/d:null; }
+function agrupar(idx,col){ const v=COL[col].v, g=new Map(); for(const i of idx){ const k=v[i]; if(k==null||k===-1) continue; let a=g.get(k); if(!a){a=[];g.set(k,a);} a.push(i);} return g; }
+function porMes(idx,a,b){ const arr=Array.from({length:b-a+1},()=>[]); for(const i of idx){ const m=MI[i]; if(m>=a&&m<=b) arr[m-a].push(i);} return arr; }
+const rotulo=(col,k)=>COL[col].dic[k];
+function variacao(a,b){ return (a==null||b==null||b===0)?null:a/b-1; }
+
+/* ---------------------------------------------- leitura do robô */
+function insights(idx,{ficha=null}={}){
+  const out=[], S=T.specs, s0=S[0], v0=calc(s0,idx), ft=fmtT(s0);
+  if(!idx.length){ return [{c:"warn",h:"Nenhum registro no filtro selecionado."}]; }
+  let txt=`<b>${esc(s0.nome)}</b> no período: <b>${ft(v0)}</b> em ${F.int(idx.length)} registros`;
+  if(MI&&ST.ate-ST.de+1<=MES.length){ const n=ST.ate-ST.de+1, a=ST.de-n;
+    if(a>=0){ const ant=filtrar({de:a,ate:ST.de-1,extra:ficha}); const va=calc(s0,ant), vr=variacao(v0,va);
+      if(vr!=null){ txt+=` — <b>${F.var(vr)}</b> contra os ${n} meses anteriores (${ft(va)})`; } } }
+  out.push({c:"",h:txt+"."});
+  if(T.parcial&&MI){ const ip=MES.indexOf(T.parcial.mes), dt=T.parcial.ate.split("-").reverse().join("/");
+    if(ip>=ST.de&&ip<=ST.ate) out.push({c:"warn",h:`Atenção: ${F.mes(T.parcial.mes)} está incompleto (dados até <b>${dt}</b>) e está dentro do período — comparações com esse mês ficam distorcidas.`});
+    else if(ip===ST.ate+1) out.push({c:"",h:`${F.mes(T.parcial.mes)} tem dados só até ${dt} e ficou fora do período padrão para não ser comparado com meses fechados.`}); }
+  if(MI&&ST.ate>ST.de){ const ms=porMes(idx,ST.de,ST.ate), vals=ms.map(x=>calc(s0,x)), u=vals.length-1, vu=vals[u], vp=vals[u-1], r=variacao(vu,vp);
+    let h=`Último mês (${F.mes(MES[ST.ate])}): <b>${ft(vu)}</b>`; if(r!=null) h+=`, <b>${F.var(r)}</b> sobre ${F.mes(MES[ST.ate-1])}`;
+    if(ST.ate-12>=0){ const yy=calc(s0,filtrar({de:ST.ate-12,ate:ST.ate-12,extra:ficha})), ry=variacao(vu,yy); if(ry!=null) h+=` e <b>${F.var(ry)}</b> sobre ${F.mes(MES[ST.ate-12])}`; }
+    const bom = s0.menor_melhor ? (r!=null&&r<0) : (r!=null&&r>0);
+    out.push({c:r==null?"":(Math.abs(r)<0.02?"":(bom?"good":"warn")),h:h+"."});
+    if(aditiva(s0)&&vals.length>=3){ let im=0; vals.forEach((x,i)=>{ if(x>vals[im]) im=i; }); out.push({c:"",h:`Mês de pico: <b>${F.mes(MES[ST.de+im])}</b> com ${ft(vals[im])} (${F.pct(vals[im]/v0)} do período).`}); }
+  }
+  // seguros: métricas-chave
+  const byNome=Object.fromEntries(S.map(s=>[s.nome,s]));
+  if(T.perfil.tipo==="seguros"){
+    const sin=byNome["Sinistralidade"]; const vs=sin?calc(sin,idx):null;
+    if(vs!=null){ const baseNome=sin.den.col==="Prêmio ganho"?"prêmio ganho":"prêmio emitido";
+      out.push({c:vs>0.7?"crit":vs>0.6?"warn":"good",h:`Sinistralidade de <b>${F.pct(vs)}</b>: ${F.brlc(agregado(sin.num,idx))} em sinistros sobre ${F.brlc(agregado(sin.den,idx))} de ${baseNome}.`}); }
+    const fr=byNome["Frequência"], sv=byNome["Severidade"];
+    if(fr&&sv) out.push({c:"",h:`Frequência de <b>${F.pct(calc(fr,idx))}</b> (sinistros por apólice) e severidade de <b>${F.brl(calc(sv,idx))}</b> por sinistro.`});
+    else if(sv) out.push({c:"",h:`Severidade (custo médio por sinistro): <b>${F.brl(calc(sv,idx))}</b> em ${F.int(calc(byNome["Nº de sinistros"],idx))} sinistros.`});
+    const av=byNome["Tempo médio de aviso (dias)"]; if(av){ const x=calc(av,idx); if(x!=null) out.push({c:x>30?"warn":"",h:`Tempo médio entre ocorrência e aviso: <b>${nf1.format(x)} dias</b>.`}); }
+    const dp=T.perfil.dim_principal;
+    if(sin&&dp&&COL[dp]&&!ficha){ const g=agrupar(idx,dp), P={num:sin.den}, totP=calc(P,idx); const piores=[];
+      g.forEach((ix,k)=>{ const p=calc(P,ix), s=calc(sin,ix); if(p&&totP&&p/totP>=0.02&&s!=null&&vs!=null&&s>vs+0.10) piores.push([rotulo(dp,k),s,p/totP]); });
+      piores.sort((a,b)=>b[1]-a[1]);
+      if(piores.length) out.push({c:"crit",h:`${esc(dp)} com sinistralidade mais de 10 p.p. acima da média: `+piores.slice(0,5).map(x=>`${esc(x[0])} (<b>${F.pct(x[1])}</b>, ${F.pct(x[2])} do prêmio)`).join("; ")+"."});
+    }
+  }
+  // dimensão principal: concentração e movimentos
+  const dims=dimensoes().filter(d=>!ficha||d!==ficha[0]);
+  const dp=(T.perfil.dim_principal&&dims.includes(T.perfil.dim_principal))?T.perfil.dim_principal:dims[0];
+  const sa=S.find(aditiva);
+  if(dp&&sa){ const g=agrupar(idx,dp), tot=calc(sa,idx); const arr=[...g.entries()].map(([k,ix])=>[rotulo(dp,k),calc(sa,ix)]).sort((a,b)=>b[1]-a[1]);
+    if(arr.length>1&&tot>0){ out.push({c:"",h:`Por ${esc(dp)}: <b>${esc(arr[0][0])}</b> lidera com ${F.pct(arr[0][1]/tot)} de ${esc(sa.nome)} (${fmtT(sa)(arr[0][1])}); depois ${esc(arr[1][0])} com ${F.pct(arr[1][1]/tot)}.`});
+      let ac=0,k=0; for(const [,x] of arr){ ac+=x; k++; if(ac>=0.8*tot) break; } if(arr.length>=5)
+      out.push({c:k/arr.length<0.2?"warn":"",h:`Concentração: <b>${k}</b> de ${arr.length} itens de ${esc(dp)} (${F.pct(k/arr.length)}) somam 80% de ${esc(sa.nome)}.`}); }
+    if(MI&&ST.ate-ST.de>=5){ const rec=filtrar({de:ST.ate-2,ate:ST.ate,extra:ficha}), ant=filtrar({de:ST.ate-5,ate:ST.ate-3,extra:ficha});
+      const gr=agrupar(rec,dp), ga=agrupar(ant,dp), mov=[];
+      new Set([...gr.keys(),...ga.keys()]).forEach(k=>{ const a=calc(sa,gr.get(k)||[]), b=calc(sa,ga.get(k)||[]); if(b>0) mov.push([rotulo(dp,k),a/b-1,a-b]); });
+      mov.sort((x,y)=>y[2]-x[2]);
+      if(mov.length>=2){ const up=mov[0], dn=mov[mov.length-1];
+        if(up[2]>0) out.push({c:"good",h:`Maior alta (últimos 3 meses × 3 anteriores): <b>${esc(up[0])}</b> ${F.var(up[1])} (${fmtT(sa)(up[2])}).`});
+        if(dn[2]<0) out.push({c:"warn",h:`Maior queda: <b>${esc(dn[0])}</b> ${F.var(dn[1])} (${fmtT(sa)(dn[2])}).`}); } }
+  }
+  if(!ficha){ const al=T.validacao.filter(r=>r.status==="ALERTA").length; if(al) out.push({c:"warn",h:`O robô de validação registrou <b>${al}</b> ressalva(s) nesta base — detalhes na aba 07.`}); }
+  return out;
+}
+const listaIns=(el,arr)=>el.innerHTML=arr.map(i=>`<li class="${i.c}">${i.h}</li>`).join("");
+
+/* ---------------------------------------------- tabela por dimensão */
+function tabelaDim(el,idx,dim,ordemSpec,limite=200){
+  const g=agrupar(idx,dim), S=T.specs.filter(s=>s.nome!=="Registros"||T.specs.length<3).slice(0,10);
+  const tot=Object.fromEntries(S.filter(aditiva).map(s=>[s.nome,calc(s,idx)]));
+  const linhas=[...g.entries()].map(([k,ix])=>{ const r={item:rotulo(dim,k)}; S.forEach(s=>r[s.nome]=calc(s,ix)); return r; });
+  const s1=S.find(aditiva);
+  tabela(el,{cols:[{k:"item",t:dim}].concat(S.map(s=>({k:s.nome,t:s.nome,n:1,f:fmtT(s)})))
+    .concat(s1?[{k:"_p",t:`% ${s1.nome}`,n:1,f:(v,r)=>F.pct(div0(r[s1.nome],tot[s1.nome]))}]:[]),
+    linhas,ordem:[ordemSpec?ordemSpec.nome:(s1?s1.nome:S[0].nome),-1],limite});
+}
+
+/* ---------------------------------------------- render */
+function render(){
+  const idx=filtrar(), S=T.specs;
+  $("hdrInfo").innerHTML=`${esc(T.nome)}<br>${MES.length?`${F.mes(MES[ST.de])} a ${F.mes(MES[ST.ate])} · `:""}${F.int(idx.length)} de ${F.int(T.n)} registros · gerado em ${esc(D.meta.gerado_em)} · <span class="status-pill ${stG[1]}">${stG[0]}</span>`;
+  /* 01 */
+  const kp=(T.perfil.kpis&&T.perfil.kpis.length?T.perfil.kpis.map(n=>S.find(s=>s.nome===n)).filter(Boolean):S.slice(0,5)).slice(0,6);
+  let ant=null; if(MI){ const n=ST.ate-ST.de+1; if(ST.de-n>=0) ant=filtrar({de:ST.de-n,ate:ST.de-1}); }
+  $("k1").innerHTML=kp.map(s=>{ const v=calc(s,idx); let sub=s.den?"":"";
+    if(ant){ const va=calc(s,ant), r=variacao(v,va); if(r!=null){ const bom=s.menor_melhor?r<0:r>0; sub=`<span style="color:${Math.abs(r)<0.005?'var(--muted)':bom?'#7fe07f':'var(--crit)'}">${r>=0?"▲":"▼"} ${F.var(r)}</span> vs período anterior`; } }
+    return `<div class="card kpi"><div class="rot">${esc(s.nome)}</div><div class="val">${fmtK(s)(v)}</div><div class="sub">${sub}</div></div>`; }).join("");
+  listaIns($("ins1"),insights(idx));
+  const s0=S.find(s=>s.nome==="Sinistralidade")||S[0];
+  $("c1t").textContent=`${s0.nome} por mês`; $("c1d").textContent=MI?"":"Sem coluna de data nesta base";
+  if(MI){ const ms=porMes(idx,ST.de,ST.ate), lb=MES.slice(ST.de,ST.ate+1).map(F.mes);
+    if(aditiva(s0)) grafColunas($("c1"),{labels:lb,v:ms.map(x=>calc(s0,x)),fmt:fmtK(s0),h:280});
+    else grafLinha($("c1"),{labels:lb,series:[{nome:s0.nome,v:ms.map(x=>calc(s0,x)),cor:"var(--s2)"}],fmt:fmtK(s0),h:280}); }
+  else { const dp=dimensoes()[0]; if(dp){ const g=agrupar(idx,dp); grafBarrasH($("c1"),{itens:[...g.entries()].map(([k,ix])=>({r:rotulo(dp,k),v:calc(S[0],ix)})).sort((a,b)=>b.v-a.v).slice(0,12),fmt:fmtK(S[0])}); $("c1t").textContent=`${S[0].nome} por ${dp}`; } else $("c1").innerHTML='<div class="vazio">Sem data nem categorias para desenhar</div>'; }
+  const dp=(T.perfil.dim_principal&&COL[T.perfil.dim_principal])?T.perfil.dim_principal:dimensoes()[0];
+  $("p1b").style.display=dp?"":"none"; if(dp){ $("t1t").textContent=`Por ${dp}`; tabelaDim($("t1"),idx,dp,null,100); }
+  renderEvolucao(idx); renderRanking(idx); renderCruz(idx); renderFicha(); renderDist(idx); renderQualidade(); renderDados(idx);
+}
+
+function renderEvolucao(idx){
+  if(!MI){ $("c2").innerHTML='<div class="vazio">Esta base não tem coluna de data</div>'; $("t2").innerHTML=""; return; }
+  const s=T.specs[+$("e2m").value||0], g=$("e2g").value, abrir=$("e2d").value;
+  const chave=m=>{ const [y,mm]=MES[m].split("-"); return g==="m"?MES[m]:g==="t"?`${y}-T${Math.ceil(+mm/3)}`:y; };
+  const rot=k=>g==="m"?F.mes(k):k.replace("-"," ");
+  const keys=[...new Set(MES.slice(ST.de,ST.ate+1).map((_,i)=>chave(ST.de+i)))];
+  const bucket=ix=>{ const b=Object.fromEntries(keys.map(k=>[k,[]])); for(const i of ix){ const m=MI[i]; if(m>=ST.de&&m<=ST.ate) b[chave(m)].push(i);} return b; };
+  const b=bucket(idx), vals=keys.map(k=>calc(s,b[k]));
+  if(abrir){ const gg=agrupar(idx,abrir), top=[...gg.entries()].map(([k,ix])=>[k,ix,calc(T.specs.find(aditiva)||s,ix)]).sort((x,y)=>y[2]-x[2]).slice(0,6);
+    grafLinha($("c2"),{labels:keys.map(rot),series:top.map(([k,ix],j)=>{ const bb=bucket(ix); return {nome:rotulo(abrir,k),v:keys.map(kk=>calc(s,bb[kk])),cor:CORES[j]}; }),fmt:fmtK(s),zero:aditiva(s)}); }
+  else if(aditiva(s)) grafColunas($("c2"),{labels:keys.map(rot),v:vals,fmt:fmtK(s),h:300});
+  else grafLinha($("c2"),{labels:keys.map(rot),series:[{nome:s.nome,v:vals,cor:"var(--s2)"}],fmt:fmtK(s)});
+  // tabela com yoy (usa toda a base filtrada sem corte de data para achar ano anterior)
+  const tudo=filtrar({semData:true}), bAll={}; for(const i of tudo){ const m=MI[i]; if(m<0) continue; const k=chave(m); (bAll[k]=bAll[k]||[]).push(i); }
+  const yoyK=k=>g==="m"?`${+k.slice(0,4)-1}${k.slice(4)}`:g==="t"?`${+k.slice(0,4)-1}${k.slice(4)}`:String(+k-1);
+  const linhas=keys.map((k,i)=>{ const v=vals[i], p=i>0?vals[i-1]:(()=>{ return null; })(), y=bAll[yoyK(k)]?calc(s,bAll[yoyK(k)]):null;
+    return {k,ord:i,v,vp:variacao(v,p),vy:variacao(v,y),y}; });
+  tabela($("t2"),{cols:[{k:"k",t:"Período",f:rot,ord:r=>r.ord},{k:"v",t:s.nome,n:1,f:fmtT(s)},{k:"vp",t:"Var. período anterior",n:1,f:F.var},{k:"y",t:"Ano anterior",n:1,f:fmtT(s)},{k:"vy",t:"Var. ano anterior",n:1,f:F.var}],linhas,ordem:["k",-1]});
+}
+function renderRanking(idx){
+  const dim=$("e3d").value; if(!dim){ $("c3").innerHTML=$("c3b").innerHTML=$("t3").innerHTML='<div class="vazio">Esta base não tem colunas de categoria</div>'; return; }
+  const s=T.specs[+$("e3m").value||0], g=agrupar(idx,dim);
+  let arr=[...g.entries()].map(([k,ix])=>({r:rotulo(dim,k),v:calc(s,ix),n:ix.length})).filter(x=>x.v!=null).sort((a,b)=>b.v-a.v);
+  $("c3t").textContent=`${s.nome} por ${dim}`; $("c3d").textContent=`${arr.length} itens · mostrando os 15 primeiros`;
+  const tot=aditiva(s)?calc(s,idx):null;
+  grafBarrasH($("c3"),{itens:arr.slice(0,15),fmt:fmtK(s),extra:tot?(it=>F.pct(it.v/tot)):(it=>F.int(it.n)+" reg.")});
+  const sa=aditiva(s)?s:T.specs.find(aditiva);
+  if(sa){ const a2=[...g.entries()].map(([k,ix])=>calc(sa,ix)).sort((a,b)=>b-a), t=a2.reduce((x,y)=>x+y,0); let ac=0; const faixas={A:0,B:0,C:0};
+    a2.forEach(x=>{ ac+=x; const p=ac/t; if(p<=0.8||faixas.A===0) faixas.A++; else if(p<=0.95) faixas.B++; else faixas.C++; });
+    grafBarrasH($("c3b"),{itens:[{r:"Classe A — 80% do total",v:faixas.A},{r:"Classe B — próximos 15%",v:faixas.B,cor:"var(--s2)"},{r:"Classe C — últimos 5%",v:faixas.C,cor:"var(--s3)"}],fmt:v=>F.int(v)+" itens",extra:it=>F.pct(it.v/a2.length)}); }
+  tabelaDim($("t3"),idx,dim,s,1000);
+}
+function renderCruz(idx){
+  const a=$("e4a").value,b=$("e4b").value; if(!a||!b||a===b){ $("t4").innerHTML='<div class="vazio">Escolha duas categorias diferentes (a base precisa de pelo menos duas)</div>'; return; }
+  const s=T.specs[+$("e4m").value||0], sa=T.specs.find(aditiva)||s;
+  const topK=(col)=>[...agrupar(idx,col).entries()].map(([k,ix])=>[k,calc(sa,ix)]).sort((x,y)=>y[1]-x[1]).slice(0,15).map(x=>x[0]);
+  const ka=topK(a), kb=topK(b), va=COL[a].v, vb=COL[b].v, cel=new Map();
+  for(const i of idx){ const x=va[i], y=vb[i]; if(x<0||y<0) continue; const k=x+"|"+y; let arr=cel.get(k); if(!arr){arr=[];cel.set(k,arr);} arr.push(i); }
+  const M=ka.map(x=>kb.map(y=>{ const ix=cel.get(x+"|"+y); return ix?calc(s,ix):null; }));
+  const flat=M.flat().filter(v=>v!=null&&isFinite(v)), mx=Math.max(...flat,1e-9), mn=Math.min(...flat,0);
+  if(!flat.length&&s.den){ $("t4").innerHTML=`<div class="vazio">“${esc(s.nome)}” não pode ser cruzada por ${esc(b)}: numerador e denominador vêm de bases diferentes e “${esc(b)}” só existe em uma delas (ex.: situação do sinistro não existe no prêmio). Escolha outra coluna ou uma métrica de soma.</div>`; return; }
+  const corCel=v=>{ if(v==null) return ""; const t=(v-mn)/((mx-mn)||1); return `background:rgba(${s.menor_melhor?"201,133,0":"57,135,229"},${0.08+t*0.6})`; };
+  const totA=ka.map(x=>calc(s,idx.filter(i=>va[i]===x))), totB=kb.map(y=>calc(s,idx.filter(i=>vb[i]===y)));
+  $("t4").innerHTML=`<table class="tab heat"><thead><tr><th>${esc(a)} \\ ${esc(b)}</th>${kb.map(y=>`<th class="n">${esc(rotulo(b,y))}</th>`).join("")}<th class="n">Total</th></tr></thead><tbody>`+
+    ka.map((x,i)=>`<tr><td>${esc(rotulo(a,x))}</td>${M[i].map((v,j)=>`<td class="n cel-heat" style="${corCel(v)}" data-tip="${esc(rotulo(a,x))} × ${esc(rotulo(b,kb[j]))}<br>${esc(s.nome)}: <b>${fmtT(s)(v)}</b>">${fmtK(s)(v)}</td>`).join("")}<td class="n"><b>${fmtK(s)(totA[i])}</b></td></tr>`).join("")+
+    `<tr><td><b>Total</b></td>${totB.map(v=>`<td class="n"><b>${fmtK(s)(v)}</b></td>`).join("")}<td class="n"><b>${fmtK(s)(calc(s,idx))}</b></td></tr></tbody></table>`;
+  ligarTips($("t4"));
+}
+function preencherFichaValores(){
+  const d=$("e5d").value; if(!d){ $("e5v").innerHTML=""; return; }
+  const sa=T.specs.find(aditiva)||T.specs[0], g=agrupar(filtrar({semData:true}),d);
+  const ord=[...g.entries()].map(([k,ix])=>[k,calc(sa,ix)]).sort((a,b)=>b[1]-a[1]);
+  $("e5v").innerHTML=ord.map(([k])=>`<option value="${k}">${esc(rotulo(d,k))}</option>`).join("");
+}
+function renderFicha(){
+  const d=$("e5d").value, k=+$("e5v").value; if(!d||isNaN(k)){ $("k5").innerHTML='<div class="vazio">Esta base não tem categorias para montar fichas</div>'; return; }
+  const idx=filtrar({extra:[d,k]}), S=T.specs, todos=filtrar();
+  const kp=(T.perfil.kpis&&T.perfil.kpis.length?T.perfil.kpis.map(n=>S.find(s=>s.nome===n)).filter(Boolean):S.slice(0,5)).slice(0,5);
+  $("k5").innerHTML=kp.map(s=>{ const v=calc(s,idx), vt=calc(s,todos);
+    const sub=aditiva(s)?`${F.pct(div0(v,vt))} do total`:`geral: ${fmtK(s)(vt)}`;
+    return `<div class="card kpi"><div class="rot">${esc(s.nome)}</div><div class="val">${fmtK(s)(v)}</div><div class="sub">${sub}</div></div>`; }).join("");
+  const s0=S.find(s=>s.nome==="Sinistralidade")||S[0]; $("c5t").textContent=`${s0.nome} por mês — ${rotulo(d,k)}`;
+  if(MI){ const ms=porMes(idx,ST.de,ST.ate), lb=MES.slice(ST.de,ST.ate+1).map(F.mes);
+    if(aditiva(s0)) grafColunas($("c5"),{labels:lb,v:ms.map(x=>calc(s0,x)),fmt:fmtK(s0),h:260});
+    else { const geral=porMes(todos,ST.de,ST.ate).map(x=>calc(s0,x)); grafLinha($("c5"),{labels:lb,series:[{nome:rotulo(d,k),v:ms.map(x=>calc(s0,x)),cor:"var(--s2)"},{nome:"Geral",v:geral,cor:"var(--s1)"}],fmt:fmtK(s0),h:260}); } }
+  else $("c5").innerHTML='<div class="vazio">Sem data</div>';
+  listaIns($("ins5"),insights(idx,{ficha:[d,k]}));
+  const outras=dimensoes().filter(x=>x!==d).slice(0,4), sa=S.find(aditiva)||S[0];
+  $("g5").innerHTML=outras.map((o,i)=>`<div class="card painel"><h3>${esc(sa.nome)} por ${esc(o)}</h3><div id="g5_${i}"></div></div>`).join("");
+  outras.forEach((o,i)=>{ const g=agrupar(idx,o), tot=calc(sa,idx);
+    grafBarrasH($("g5_"+i),{itens:[...g.entries()].map(([kk,ix])=>({r:rotulo(o,kk),v:calc(sa,ix)})).sort((a,b)=>b.v-a.v).slice(0,10),fmt:fmtK(sa),extra:it=>F.pct(div0(it.v,tot))}); });
+}
+function renderDist(idx){
+  const c=$("e6c").value; if(!c){ $("k6").innerHTML='<div class="vazio">Esta base não tem colunas numéricas</div>'; $("c6").innerHTML=""; return; }
+  const v=COL[c].v, xs=[]; for(const i of idx){ if(v[i]!=null) xs.push(v[i]); } xs.sort((a,b)=>a-b);
+  const n=xs.length, q=p=>n?xs[Math.min(n-1,Math.floor(p*(n-1)))]:null, soma=xs.reduce((a,b)=>a+b,0), med=n?soma/n:null;
+  const dp=n>1?Math.sqrt(xs.reduce((a,b)=>a+(b-med)**2,0)/(n-1)):null;
+  $("k6").innerHTML=[["Soma",soma],["Média",med],["Mediana",q(.5)],["Mínimo",q(0)],["Máximo",q(1)],["Desvio-padrão",dp],["P25 · P75",null,`${F.comp(q(.25))} · ${F.comp(q(.75))}`],["Preenchidos",null,`${F.int(n)} de ${F.int(idx.length)}`]]
+    .map(([r,x,t])=>`<div class="card kpi"><div class="rot">${r}</div><div class="val" style="font-size:24px">${t||F.comp(x)}</div></div>`).join("");
+  if(n<2){ $("c6").innerHTML='<div class="vazio">Poucos valores</div>'; return; }
+  const lo=q(0.01), hi=q(0.99), nb=20, w=(hi-lo)/nb||1, bins=Array(nb).fill(0); let fora=0;
+  for(const x of xs){ if(x<lo||x>hi){fora++;continue;} bins[Math.min(nb-1,Math.floor((x-lo)/w))]++; }
+  grafColunas($("c6"),{labels:bins.map((_,i)=>F.comp(lo+i*w)),v:bins,fmt:F.int,destacarUltima:false,h:280,
+    tips:bins.map((b,i)=>`${F.comp(lo+i*w)} a ${F.comp(lo+(i+1)*w)}: <b>${F.int(b)}</b> registros`)});
+  if(fora) $("c6").insertAdjacentHTML("beforeend",`<p class="desc">${F.int(fora)} valores abaixo do percentil 1 ou acima do 99 ficaram fora do gráfico (mas estão nas estatísticas).</p>`);
+}
+let validacaoFeita=-1;
+function renderQualidade(){
+  const tipoNome={data:"Data",numero:"Número",categoria:"Categoria",id:"Identificador",texto:"Texto livre",vazia:"Vazia"};
+  const cel=T.n*T.colunas.length, vaz=T.colunas.reduce((s,c)=>s+c.vazios,0), inv=T.colunas.reduce((s,c)=>s+c.invalidos,0);
+  const regras=D.validacao_geral.concat(T.validacao);
+  $("k7").innerHTML=`<div class="card kpi"><div class="rot">Status</div><div class="val" style="font-size:20px"><span class="status-pill ${stG[1]}">${stG[0]}</span></div></div>`
+    +`<div class="card kpi"><div class="rot">Registros</div><div class="val">${F.int(T.n)}</div><div class="sub">${T.colunas.length} colunas</div></div>`
+    +`<div class="card kpi"><div class="rot">Preenchimento</div><div class="val">${F.pct(1-vaz/cel)}</div><div class="sub">${F.int(vaz)} células vazias</div></div>`
+    +`<div class="card kpi"><div class="rot">Valores inválidos</div><div class="val">${F.int(inv)}</div><div class="sub">fora dos cálculos</div></div>`
+    +`<div class="card kpi"><div class="rot">Ressalvas</div><div class="val">${F.int(regras.filter(r=>r.status==="ALERTA"||r.status==="ERRO").length)}</div><div class="sub">regras com alerta</div></div>`;
+  painelValidacao($("v7"),regras);
+  tabela($("t7"),{cols:[{k:"nome",t:"Coluna"},{k:"tipo",t:"Interpretação",f:v=>tipoNome[v]||v},{k:"preenchidos",t:"Preenchidos",n:1,f:F.int},{k:"pv",t:"% preench.",n:1,f:F.pct},{k:"distintos",t:"Distintos",n:1,f:F.int},{k:"invalidos",t:"Inválidos",n:1,f:v=>v?`<span style="color:var(--warn)">${F.int(v)}</span>`:"0"}],
+    linhas:T.colunas.map(c=>({...c,pv:div0(c.preenchidos,T.n)}))});
+}
+function valorCel(c,i){ const x=c.v[i]; if(x==null||x===-1) return ""; if(c.tipo==="categoria") return c.dic[x]; if(c.tipo==="data") return x.slice(0,10).split("-").reverse().join("/"); return x; }
+let idxAtual=[];
+function renderDados(idx){
+  const q=$("busca").value.trim().toLowerCase(); let ix=idx;
+  if(q) ix=idx.filter(i=>T.colunas.some(c=>String(valorCel(c,i)).toLowerCase().includes(q)));
+  idxAtual=ix; $("nReg").textContent=`${F.int(ix.length)} registros${ix.length>300?" · mostrando 300":""}`;
+  const cs=T.colunas.filter(c=>c.tipo!=="vazia");
+  $("t8").innerHTML=`<table class="tab"><thead><tr>${cs.map(c=>`<th class="${c.tipo==='numero'?'n':''}">${esc(c.nome)}</th>`).join("")}</tr></thead><tbody>`+
+    ix.slice(0,300).map(i=>`<tr>${cs.map(c=>{ const v=valorCel(c,i); return `<td class="${c.tipo==='numero'?'n':''}">${c.tipo==='numero'&&v!==""?F.num(v):esc(v)}</td>`; }).join("")}</tr>`).join("")+"</tbody></table>";
+}
+$("busca").oninput=()=>renderDados(filtrar());
+$("btnCsv").onclick=()=>{ const cs=T.colunas.filter(c=>c.tipo!=="vazia");
+  const lin=[cs.map(c=>c.nome).join(";")].concat(idxAtual.map(i=>cs.map(c=>{ let v=valorCel(c,i); if(c.tipo==="numero"&&v!=="") v=String(v).replace(".",","); v=String(v); return /[;"\n]/.test(v)?`"${v.replace(/"/g,'""')}"`:v; }).join(";")));
+  const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob(["﻿"+lin.join("\n")],{type:"text/csv"})); a.download="dados_filtrados.csv"; a.click(); };
+
+function metodologia(){
+  const S=T.specs.map(s=>{ const d=o=>o.op==="count"?"nº de registros":o.op==="distinct"?`nº de ${o.col} distintos`:o.op==="avg"?`média de ${o.col}`:o.op==="sum_many"?`Σ (${o.cols.join(" + ")})`:`Σ ${o.col}`;
+    return `<b>${esc(s.nome)}</b> = ${esc(d(s.num))}${s.den?" ÷ "+esc(d(s.den)):""}`; }).join(" · ");
+  return `<b>Metodologia.</b> ${S}. Razões são sempre calculadas como soma ÷ soma no período filtrado (nunca média de percentuais). ` +
+    `Comparações "vs período anterior" usam a mesma quantidade de meses imediatamente antes. Células ilegíveis ficam fora dos cálculos e estão contadas na aba 07.`+
+    (T.perfil.tipo==="seguros"?" Prêmios e sinistros são cruzados por mês e pelas dimensões comuns (ramo, produto, UF, canal…). Sinistros por data de ocorrência (ou aviso, se não houver ocorrência); prêmio emitido por competência/emissão; prêmio ganho distribuído dia a dia na vigência. Meses mais recentes ainda receberão avisos de sinistros já ocorridos (IBNR) — o robô não estima esse valor.":"");
+}
+
+/* ---------------------------------------------- eventos */
+$("fTab").innerHTML=D.tabelas.map((t,i)=>`<option value="${i}">${esc(t.nome)} (${F.int(t.n)})</option>`).join("");
+$("fTab").onchange=e=>{ prepararTabela(+e.target.value); render(); };
+$("fDe").onchange=e=>{ ST.de=+e.target.value; if(ST.de>ST.ate){ST.ate=ST.de;$("fAte").value=ST.ate;} render(); };
+$("fAte").onchange=e=>{ ST.ate=+e.target.value; if(ST.ate<ST.de){ST.de=ST.ate;$("fDe").value=ST.de;} render(); };
+["e2m","e2g","e2d"].forEach(id=>$(id).onchange=()=>renderEvolucao(filtrar()));
+["e3d","e3m"].forEach(id=>$(id).onchange=()=>renderRanking(filtrar()));
+["e4a","e4b","e4m"].forEach(id=>$(id).onchange=()=>renderCruz(filtrar()));
+$("e5d").onchange=()=>{ preencherFichaValores(); renderFicha(); }; $("e5v").onchange=renderFicha;
+$("e6c").onchange=()=>renderDist(filtrar());
+prepararTabela(0); abas($("abas"), ()=>render()); aoRedimensionar(render);
+</script>
+</body>
+</html>
