@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Robô BI · Entrar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>/*__CSS__*/
+body{padding:0;max-width:none}
+.shell{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+.intro{position:relative;overflow:hidden;padding:38px 7vw 34px;display:flex;flex-direction:column;justify-content:space-between;
+  background:radial-gradient(circle at 30% 40%,rgba(90,180,229,.18),transparent 55%),linear-gradient(145deg,#081322,#10233d 50%,#060f1c)}
+.intro::before{content:"";position:absolute;inset:0;opacity:.5;
+  background:repeating-linear-gradient(116deg,transparent 0 42px,rgba(90,180,229,.07) 43px 44px)}
+.intro>*{position:relative;z-index:1}
+.topline{display:flex;align-items:center;gap:10px;color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.ponto{width:7px;height:7px;background:var(--accent);border-radius:50%;box-shadow:0 0 0 5px rgba(90,180,229,.15)}
+.intro .logo{margin-bottom:28px}
+.kicker{color:var(--accent);font-family:var(--mono);font-size:11px;letter-spacing:.11em;text-transform:uppercase}
+.intro h1{max-width:560px;margin:13px 0 20px;font-size:clamp(32px,3.6vw,56px);line-height:1.05;letter-spacing:-.04em;font-weight:600}
+.intro p{max-width:440px;margin:0;color:var(--ink-2);font-size:15px;line-height:1.8}
+.rodape{display:flex;gap:9px;align-items:center;color:var(--muted);font-size:12px}
+.lado{display:grid;place-items:center;padding:40px 7vw;background:var(--surface)}
+.cartao{width:min(100%,420px)}
+.abas2{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:4px;margin-bottom:30px}
+.abas2 button{background:none;border:0;border-radius:7px;padding:10px;cursor:pointer;font-weight:600;color:var(--ink-2)}
+.abas2 button[aria-selected=true]{background:var(--accent);color:var(--accent-ink)}
+.titulo{margin-bottom:26px}
+.titulo h2{margin:10px 0 8px;font-size:28px;letter-spacing:-.03em}
+.titulo p{margin:0;color:var(--muted);font-size:14px;line-height:1.65}
+form{display:grid;gap:16px}
+form label{display:grid;gap:7px;font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:var(--ink-2)}
+form input{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 13px;text-transform:none;letter-spacing:0;font-size:14px}
+form input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+.linha{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.enviar{display:flex;justify-content:center;align-items:center;gap:10px;border:0;border-radius:8px;padding:14px 18px;margin-top:4px;
+  background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:14px;cursor:pointer;transition:transform .2s}
+.enviar:hover:not(:disabled){transform:translateY(-2px)}
+.enviar:disabled{cursor:wait;opacity:.55}
+.msg{padding:11px 13px;border-radius:8px;font-size:13px}
+.msg.erro{background:var(--crit-bg);color:#ff9a9a}
+.msg.ok{background:var(--good-bg);color:#7fe07f}
+.link{justify-self:center;border:0;padding:4px;background:none;color:var(--accent);font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.nota{display:flex;gap:8px;align-items:center;margin-top:28px;color:var(--muted);font-size:12px}
+[hidden]{display:none!important}
+@media (max-width:760px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .intro{min-height:auto;padding:28px 16px 32px}
+  .intro h1{font-size:32px}
+  .rodape{margin-top:22px}
+  .lado{padding:36px 16px 60px;place-items:start center}
+  .linha{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<main class="shell">
+  <section class="intro">
+    <div class="topline"><span class="ponto"></span> Robô BI <span>·</span> acesso seguro</div>
+    <div>
+      <div class="logo"><div class="marca">RB</div><div><b>Robô BI</b><small>Inteligência de dados</small></div></div>
+      <span class="kicker">Relatórios automáticos</span>
+      <h1>Seus arquivos viram painéis confiáveis.</h1>
+      <p>Suba planilhas e exportações de sistema; o robô valida, cruza as métricas e entrega o BI pronto.</p>
+    </div>
+    <div class="rodape">🔒 Roda só no seu computador. Nada é enviado para a internet.</div>
+  </section>
+
+  <section class="lado">
+    <div class="cartao">
+      <div class="abas2" role="tablist">
+        <button type="button" role="tab" id="abaEntrar" aria-selected="true">Entrar</button>
+        <button type="button" role="tab" id="abaCriar" aria-selected="false">Criar conta</button>
+      </div>
+
+      <div id="vEntrar">
+        <div class="titulo"><span class="kicker">Acesso</span><h2>Bem-vindo de volta.</h2><p>Entre para gerar e consultar seus relatórios.</p></div>
+        <form id="fEntrar" novalidate>
+          <label>E-mail<input type="email" name="email" placeholder="voce@empresa.com" autocomplete="email" required></label>
+          <label>Senha<input type="password" name="senha" placeholder="Sua senha" autocomplete="current-password" required></label>
+          <div class="msg" id="mEntrar" hidden></div>
+          <button class="enviar" type="submit">Entrar →</button>
+          <button class="link" type="button" data-ir="criar">Ainda não tem conta? Cadastre-se</button>
+        </form>
+      </div>
+
+      <div id="vCriar" hidden>
+        <div class="titulo"><span class="kicker">Cadastro</span><h2>Crie seu acesso.</h2><p>Leva menos de um minuto. A senha precisa ter pelo menos 8 caracteres.</p></div>
+        <form id="fCriar" novalidate>
+          <label>Nome<input name="nome" autocomplete="name" required></label>
+          <label>Empresa (opcional)<input name="empresa" autocomplete="organization"></label>
+          <label>E-mail<input type="email" name="email" placeholder="voce@empresa.com" autocomplete="email" required></label>
+          <div class="linha">
+            <label>Senha<input type="password" name="senha" autocomplete="new-password" minlength="8" required></label>
+            <label>Confirme a senha<input type="password" name="confirma" autocomplete="new-password" minlength="8" required></label>
+          </div>
+          <div class="msg" id="mCriar" hidden></div>
+          <button class="enviar" type="submit">Criar conta →</button>
+          <button class="link" type="button" data-ir="entrar">Já tenho conta</button>
+        </form>
+      </div>
+
+      <div class="nota">🔒 Senhas guardadas com criptografia; sessão expira em 12 horas.</div>
+    </div>
+  </section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+function aba(qual){
+  const entrar=qual==="entrar";
+  $("vEntrar").hidden=!entrar; $("vCriar").hidden=entrar;
+  $("abaEntrar").setAttribute("aria-selected",entrar); $("abaCriar").setAttribute("aria-selected",!entrar);
+  (entrar?$("fEntrar"):$("fCriar")).querySelector("input").focus();
+}
+$("abaEntrar").onclick=()=>aba("entrar"); $("abaCriar").onclick=()=>aba("criar");
+document.querySelectorAll("[data-ir]").forEach(b=>b.onclick=()=>aba(b.dataset.ir));
+function mostrar(el,texto,tipo){ el.textContent=texto; el.className="msg "+tipo; el.hidden=!texto; }
+async function enviar(url,dados){
+  const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(dados)});
+  let corpo={}; try{ corpo=await r.json(); }catch(e){}
+  if(!r.ok) throw new Error(corpo.erro||"Não foi possível concluir. Tente de novo.");
+  return corpo;
+}
+$("fEntrar").onsubmit=async e=>{
+  e.preventDefault(); const f=e.target, d=Object.fromEntries(new FormData(f)), b=f.querySelector(".enviar");
+  if(!d.email||!d.senha) return mostrar($("mEntrar"),"Preencha e-mail e senha.","erro");
+  b.disabled=true; b.textContent="Entrando…"; mostrar($("mEntrar"),"","");
+  try{ await enviar("/api/login",d); location.href="/"; }
+  catch(err){ mostrar($("mEntrar"),err.message,"erro"); b.disabled=false; b.textContent="Entrar →"; }
+};
+$("fCriar").onsubmit=async e=>{
+  e.preventDefault(); const f=e.target, d=Object.fromEntries(new FormData(f)), b=f.querySelector(".enviar");
+  if(!d.nome||!d.email||!d.senha) return mostrar($("mCriar"),"Preencha nome, e-mail e senha.","erro");
+  if(d.senha.length<8) return mostrar($("mCriar"),"A senha precisa ter pelo menos 8 caracteres.","erro");
+  if(d.senha!==d.confirma) return mostrar($("mCriar"),"As senhas não coincidem.","erro");
+  b.disabled=true; b.textContent="Criando…"; mostrar($("mCriar"),"","");
+  try{ await enviar("/api/cadastro",d); location.href="/"; }
+  catch(err){ mostrar($("mCriar"),err.message,"erro"); b.disabled=false; b.textContent="Criar conta →"; }
+};
+if(location.hash==="#cadastro") aba("criar"); else $("fEntrar").querySelector("input").focus();
+</script>
+</body>
+</html>

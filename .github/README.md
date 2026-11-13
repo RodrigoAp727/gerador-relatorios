@@ -8,6 +8,19 @@ Feito em Python puro, sem dependências obrigatórias. Roda no seu computador e 
 
 ---
 
+## Login e cadastro
+
+O acesso é protegido por login. Na primeira vez, crie a conta na aba **Criar conta** (nome, empresa opcional, e-mail e senha). Depois é só entrar com e-mail e senha.
+
+![Tela de login](../docs/img/00_login.png)
+
+<p align="center"><img src="../docs/img/00_cadastro_celular.png" alt="Cadastro no celular" width="300"></p>
+
+- Senhas guardadas com criptografia (scrypt com sal), nunca em texto puro.
+- A sessão expira em 12 horas, e o botão **Sair** encerra na hora.
+- Muitas tentativas erradas seguidas fazem o login esperar alguns minutos, sem travar a conta.
+- Usuários e sessões ficam em `dados_bi/acesso.db`, só no seu computador.
+
 ## Como funciona
 
 1. **Suba os arquivos** na tela de envio: arraste planilhas, CSVs, uma pasta inteira ou um `.zip`.
@@ -72,7 +85,7 @@ cd gerador-relatorios
 python servidor_bi.py
 ```
 
-O navegador abre em `http://127.0.0.1:8765` com a tela de envio. No Windows, também dá para usar duplo clique em **`ROBO_BI.bat`**.
+O navegador abre em `http://127.0.0.1:8765` na tela de login. Na primeira vez, crie sua conta na aba **Criar conta**; depois é só entrar com e-mail e senha. Os usuários ficam em `dados_bi/acesso.db`, só no seu computador. No Windows, também dá para usar duplo clique em **`ROBO_BI.bat`**.
 
 Para testar sem dados próprios:
 
@@ -117,9 +130,10 @@ python tests/test_robo_bi.py
 ## Estrutura
 
 ```
-servidor_bi.py         tela de envio (servidor local)
+servidor_bi.py         tela de envio (servidor local, com login)
 rodar_robo.py          linha de comando
 ROBO_BI.bat            atalho Windows
+robo_bi/acesso.py      login, cadastro e sessões (SQLite local)
 robo_bi/formatos.py    leitor universal de arquivos
 robo_bi/leitura.py     normalização de números, datas e nomes + classificação de saúde
 robo_bi/motor.py       saúde: validação e cruzamento beneficiário a beneficiário

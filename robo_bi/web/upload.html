@@ -42,7 +42,10 @@
 .passo b{display:block;margin-bottom:2px}.passo span{color:var(--muted);font-size:13px}
 .spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:g 1s linear infinite;vertical-align:-2px;margin-right:8px}
 @keyframes g{to{transform:rotate(360deg)}}
-@media (max-width:800px){.passos{grid-template-columns:1fr}}
+.usuario{display:flex;align-items:center;gap:12px;padding-left:22px;border-left:1px solid var(--line);color:var(--ink-2);white-space:nowrap}
+.usuario .btn{padding:8px 16px;font-size:13px}
+@media (max-width:800px){.passos{grid-template-columns:1fr}
+  header.topo{flex-wrap:wrap;gap:14px}.usuario{border-left:0;padding-left:0;width:100%;justify-content:space-between}}
 </style>
 </head>
 <body>
@@ -50,6 +53,7 @@
   <div class="logo"><div class="marca">RB</div><div><b>Robô BI</b><small>Inteligência de dados</small></div></div>
   <h1>Envio de arquivos</h1>
   <div class="info">Os arquivos ficam no seu computador<br>nada é enviado para a internet</div>
+  <div class="usuario"><span>Olá, <b>__USUARIO__</b></span><button class="btn sec" id="btnSair" type="button">Sair</button></div>
 </header>
 
 <div class="passos" style="margin-top:12px">
@@ -97,6 +101,10 @@
 
 <script>
 const $=id=>document.getElementById(id);
+// sessão expirada em qualquer chamada → volta para o login
+const _fetch=window.fetch.bind(window);
+window.fetch=async(...a)=>{ const r=await _fetch(...a); if(r.status===401){ location.href="/login"; throw new Error("Sessão expirada"); } return r; };
+$("btnSair").onclick=async()=>{ try{ await _fetch("/api/sair",{method:"POST"}); }finally{ location.href="/login"; } };
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const tam=b=>b>1e9?(b/1e9).toFixed(2)+" GB":b>1e6?(b/1e6).toFixed(1)+" MB":(b/1e3).toFixed(0)+" KB";
 let arquivos=[];

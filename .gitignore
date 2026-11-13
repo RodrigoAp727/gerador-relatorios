@@ -18,6 +18,7 @@
 !/tests/
 /tests/*
 !/tests/test_robo_bi.py
+!/tests/test_acesso.py
 
 # sempre fora, em qualquer pasta
 __pycache__/

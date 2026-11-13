@@ -4,6 +4,8 @@
 
 Roda só no seu computador (127.0.0.1): os arquivos não vão para a internet.
 Cada envio vira uma pasta em relatorios_bi/AAAAMMDD_HHMMSS/ com os painéis e a validação.
+O acesso exige login: na primeira vez, crie a conta na própria tela (aba "Criar conta").
+Usuários e sessões ficam em dados_bi/acesso.db.
 """
 from __future__ import annotations
 
@@ -23,6 +25,7 @@ from pathlib import Path
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
+from robo_bi.acesso import SESSAO_HORAS, Acesso, ErroAcesso  # noqa: E402
 from robo_bi.formatos import EXTENSOES  # noqa: E402
 from robo_bi.motor import Parametros  # noqa: E402
 from robo_bi.robo import WEB, executar  # noqa: E402
@@ -31,7 +34,11 @@ RAIZ = Path(__file__).resolve().parent
 SAIDA = RAIZ / "relatorios_bi"
 PORTA = 8765
 LIMITE_UPLOAD = 2 * 1024 ** 3  # 2 GB por envio
+LIMITE_JSON = 16 * 1024
+COOKIE = "robo_bi_sessao"
+ROTAS_LIVRES = {"/login", "/api/login", "/api/cadastro"}
 TRABALHOS: dict[str, dict] = {}
+ACESSO: Acesso | None = None  # criado no main() (ou pelos testes)
 
 
 def _nome_seguro(nome: str) -> str:
@@ -96,16 +103,84 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(dados)
 
+    # ---------- sessão ----------
+    def _token(self) -> str | None:
+        for item in (self.headers.get("Cookie") or "").split(";"):
+            nome, _, valor = item.strip().partition("=")
+            if nome == COOKIE and valor:
+                return valor
+        return None
+
+    def _usuario(self) -> dict | None:
+        return ACESSO.usuario_da_sessao(self._token())
+
+    def _cookie(self, token: str, idade: int) -> str:
+        return f"{COOKIE}={token}; Max-Age={idade}; Path=/; HttpOnly; SameSite=Strict"
+
+    def _redirecionar(self, destino: str):
+        self.send_response(303)
+        self.send_header("Location", destino)
+        self.send_header("Content-Length", "0")
+        self.end_headers()
+
+    def _pagina(self, arquivo: str, troca: dict[str, str] | None = None):
+        css = (WEB / "base.css").read_text(encoding="utf-8")
+        texto = (WEB / arquivo).read_text(encoding="utf-8").replace("/*__CSS__*/", css)
+        for chave, valor in (troca or {}).items():
+            texto = texto.replace(chave, valor)
+        html = texto.encode("utf-8")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(html)))
+        self.send_header("Cache-Control", "no-store")
+        self.end_headers()
+        self.wfile.write(html)
+
+    def _ler_json(self) -> dict:
+        tamanho = int(self.headers.get("Content-Length", 0) or 0)
+        if tamanho <= 0 or tamanho > LIMITE_JSON:
+            raise ErroAcesso("Envio inválido.")
+        try:
+            dados = json.loads(self.rfile.read(tamanho).decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            raise ErroAcesso("Envio inválido.") from None
+        if not isinstance(dados, dict):
+            raise ErroAcesso("Envio inválido.")
+        return {k: v if isinstance(v, str) else "" for k, v in dados.items()}
+
+    def _login_ou_cadastro(self, caminho: str):
+        try:
+            d = self._ler_json()
+            ip = self.client_address[0]
+            if caminho == "/api/cadastro":
+                if d.get("senha") != d.get("confirma"):
+                    raise ErroAcesso("As senhas não coincidem.")
+                ACESSO.cadastrar(d.get("nome", ""), d.get("email", ""), d.get("senha", ""), d.get("empresa", ""), ip=ip)
+            token, usuario = ACESSO.entrar(d.get("email", ""), d.get("senha", ""), ip=ip)
+        except ErroAcesso as e:
+            return self._json({"erro": str(e)}, e.codigo)
+        dados = json.dumps({"usuario": usuario}, ensure_ascii=False).encode("utf-8")
+        self.send_response(201 if caminho == "/api/cadastro" else 200)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Set-Cookie", self._cookie(token, SESSAO_HORAS * 3600))
+        self.send_header("Content-Length", str(len(dados)))
+        self.end_headers()
+        self.wfile.write(dados)
+
     def do_GET(self):
         caminho = self.path.split("?")[0]
+        usuario = self._usuario()
+        if caminho == "/login":
+            return self._redirecionar("/") if usuario else self._pagina("login.html")
+        if not usuario:
+            if caminho.startswith("/api/"):
+                return self._json({"erro": "Sessão expirada. Entre novamente."}, 401)
+            return self._redirecionar("/login")
         if caminho in ("/", "/index.html"):
-            css = (WEB / "base.css").read_text(encoding="utf-8")
-            html = (WEB / "upload.html").read_text(encoding="utf-8").replace("/*__CSS__*/", css).encode("utf-8")
-            self.send_response(200)
-            self.send_header("Content-Type", "text/html; charset=utf-8")
-            self.send_header("Content-Length", str(len(html)))
-            self.end_headers()
-            self.wfile.write(html)
+            from html import escape
+            self._pagina("upload.html", {"__USUARIO__": escape(usuario["nome"])})
+        elif caminho == "/api/eu":
+            self._json(usuario)
         elif caminho.startswith("/api/status/"):
             job = TRABALHOS.get(caminho.rsplit("/", 1)[-1])
             if not job:
@@ -141,7 +216,18 @@ class Handler(BaseHTTPRequestHandler):
             self.send_error(404)
 
     def do_POST(self):
-        if self.path != "/api/processar":
+        caminho = self.path.split("?")[0]
+        if caminho in ROTAS_LIVRES:
+            return self._login_ou_cadastro(caminho)
+        if caminho == "/api/sair":
+            ACESSO.sair(self._token())
+            self.send_response(204)
+            self.send_header("Set-Cookie", self._cookie("", 0))
+            self.end_headers()
+            return
+        if not self._usuario():
+            return self._json({"erro": "Sessão expirada. Entre novamente."}, 401)
+        if caminho != "/api/processar":
             return self.send_error(404)
         tamanho = int(self.headers.get("Content-Length", 0))
         if tamanho <= 0 or tamanho > LIMITE_UPLOAD:
@@ -190,7 +276,9 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
+    global ACESSO
     SAIDA.mkdir(exist_ok=True)
+    ACESSO = Acesso(RAIZ / "dados_bi" / "acesso.db")
     srv = ThreadingHTTPServer(("127.0.0.1", PORTA), Handler)
     url = f"http://127.0.0.1:{PORTA}"
     print(f"Robô BI rodando em {url}  (feche esta janela para encerrar)")
